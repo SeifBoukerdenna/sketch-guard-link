@@ -1,4 +1,4 @@
-import { NetworkGraph } from "@/components/NetworkGraph";
+import { InteractiveNetworkGraph } from "@/components/InteractiveNetworkGraph";
 import { PartnerStatusCard } from "@/components/PartnerStatusCard";
 import { AlertModal } from "@/components/AlertModal";
 import { Shield, Activity, FileText, Settings } from "lucide-react";
@@ -40,8 +40,8 @@ const Index = () => {
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
         <div className="space-y-8">
-          {/* Network Graph - First Element */}
-          <NetworkGraph />
+          {/* Interactive Network Graph - First Element */}
+          <InteractiveNetworkGraph />
 
           {/* Alert Section */}
           <AlertModal />
