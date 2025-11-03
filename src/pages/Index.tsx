@@ -2,11 +2,14 @@ import { InteractiveNetworkGraph } from "@/components/InteractiveNetworkGraph";
 import { SecurityDashboard } from "@/components/SecurityDashboard";
 import { PartnerStatusCard } from "@/components/PartnerStatusCard";
 import { AlertModal } from "@/components/AlertModal";
-import { Shield, Activity, FileText, Settings, BarChart3 } from "lucide-react";
+import { Shield, FileText, Settings, BarChart3, FolderOpen, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -23,8 +26,8 @@ const Index = () => {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm">
-                <Activity className="w-4 h-4 mr-2" />
+              <Button variant="outline" size="sm" onClick={() => navigate("/scan-history")}>
+                <FolderOpen className="w-4 h-4 mr-2" />
                 Historique
               </Button>
               <Button variant="outline" size="sm">
