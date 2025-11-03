@@ -1,8 +1,10 @@
 import { InteractiveNetworkGraph } from "@/components/InteractiveNetworkGraph";
+import { SecurityDashboard } from "@/components/SecurityDashboard";
 import { PartnerStatusCard } from "@/components/PartnerStatusCard";
 import { AlertModal } from "@/components/AlertModal";
-import { Shield, Activity, FileText, Settings } from "lucide-react";
+import { Shield, Activity, FileText, Settings, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
   return (
@@ -39,16 +41,37 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
-        <div className="space-y-8">
-          {/* Interactive Network Graph - First Element */}
-          <InteractiveNetworkGraph />
+        <Tabs defaultValue="dashboard" className="space-y-6">
+          <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsTrigger value="dashboard" className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4" />
+              Tableau de bord
+            </TabsTrigger>
+            <TabsTrigger value="network" className="flex items-center gap-2">
+              <Activity className="w-4 h-4" />
+              Réseau
+            </TabsTrigger>
+          </TabsList>
 
-          {/* Alert Section */}
-          <AlertModal />
+          <TabsContent value="dashboard" className="space-y-8">
+            {/* Security Dashboard */}
+            <SecurityDashboard />
 
-          {/* Partner Status Cards */}
-          <PartnerStatusCard />
-        </div>
+            {/* Alert Section */}
+            <AlertModal />
+
+            {/* Partner Status Cards */}
+            <PartnerStatusCard />
+          </TabsContent>
+
+          <TabsContent value="network" className="space-y-8">
+            {/* Interactive Network Graph */}
+            <InteractiveNetworkGraph />
+
+            {/* Alert Section */}
+            <AlertModal />
+          </TabsContent>
+        </Tabs>
       </main>
 
       {/* Footer */}

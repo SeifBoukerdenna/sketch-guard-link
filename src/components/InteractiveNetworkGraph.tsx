@@ -50,6 +50,43 @@ const initialPartners: Partner[] = [
     lastScan: "Il y a 1 heure",
   },
   {
+    id: "redhat",
+    name: "Red Hat",
+    status: "alert",
+    vulnerabilities: 2,
+    description: "Plateforme OpenShift",
+    lastScan: "Il y a 45 min",
+  },
+  {
+    id: "veeam",
+    name: "Veeam",
+    status: "healthy",
+    description: "Solutions backup",
+    lastScan: "Il y a 3 heures",
+  },
+  {
+    id: "cirrus-baas",
+    name: "Cirrus BaaS",
+    status: "warning",
+    vulnerabilities: 1,
+    description: "Backup as a Service",
+    lastScan: "Il y a 1 jour",
+  },
+  {
+    id: "cirrus-paas",
+    name: "Cirrus PaaS",
+    status: "healthy",
+    description: "Platform as a Service",
+    lastScan: "Il y a 6 heures",
+  },
+  {
+    id: "cloudconnect",
+    name: "Cloud Connect",
+    status: "healthy",
+    description: "Connectivité cloud",
+    lastScan: "Il y a 2 heures",
+  },
+  {
     id: "zono",
     name: "Zono Canada",
     status: "healthy",
@@ -70,13 +107,99 @@ const initialPartners: Partner[] = [
     description: "Solutions logicielles",
     lastScan: "Il y a 2 jours",
   },
+  {
+    id: "microsoft",
+    name: "Microsoft Azure",
+    status: "healthy",
+    description: "Infrastructure cloud",
+    lastScan: "Il y a 1 heure",
+  },
+  {
+    id: "aws",
+    name: "AWS",
+    status: "healthy",
+    description: "Services cloud Amazon",
+    lastScan: "Il y a 2 heures",
+  },
+  {
+    id: "cisco",
+    name: "Cisco",
+    status: "healthy",
+    description: "Équipements réseau",
+    lastScan: "Il y a 5 heures",
+  },
+  {
+    id: "fortinet",
+    name: "Fortinet",
+    status: "warning",
+    description: "Pare-feu & sécurité",
+    lastScan: "Il y a 12 heures",
+  },
+  {
+    id: "vmware",
+    name: "VMware",
+    status: "healthy",
+    description: "Virtualisation",
+    lastScan: "Il y a 3 heures",
+  },
+  {
+    id: "oracle",
+    name: "Oracle",
+    status: "healthy",
+    description: "Base de données",
+    lastScan: "Il y a 8 heures",
+  },
+  {
+    id: "salesforce",
+    name: "Salesforce",
+    status: "healthy",
+    description: "CRM cloud",
+    lastScan: "Il y a 1 jour",
+  },
+  {
+    id: "sophos",
+    name: "Sophos",
+    status: "alert",
+    vulnerabilities: 1,
+    description: "Antivirus & EDR",
+    lastScan: "Il y a 30 min",
+  },
+  {
+    id: "crowdstrike",
+    name: "CrowdStrike",
+    status: "healthy",
+    description: "Protection endpoints",
+    lastScan: "Il y a 1 heure",
+  },
+  {
+    id: "paloalto",
+    name: "Palo Alto",
+    status: "healthy",
+    description: "Next-gen firewall",
+    lastScan: "Il y a 4 heures",
+  },
 ];
 
 const initialNodes: Node[] = initialPartners.map((partner, index) => {
-  const angle = index === 0 ? 0 : ((index - 1) * (360 / (initialPartners.length - 1))) * (Math.PI / 180);
-  const radius = index === 0 ? 0 : 250;
-  const x = index === 0 ? 400 : 400 + Math.cos(angle) * radius;
-  const y = index === 0 ? 300 : 300 + Math.sin(angle) * radius;
+  if (index === 0) {
+    // Central node
+    return {
+      id: partner.id,
+      type: "custom",
+      position: { x: 500, y: 400 },
+      data: partner,
+    };
+  }
+  
+  // Arrange other nodes in concentric circles
+  const ring = Math.floor((index - 1) / 6);
+  const posInRing = (index - 1) % 6;
+  const nodesInRing = Math.min(6, initialPartners.length - 1 - ring * 6);
+  const angle = (posInRing * (360 / nodesInRing)) * (Math.PI / 180);
+  const radius = 220 + ring * 180;
+  
+  const x = 500 + Math.cos(angle) * radius;
+  const y = 400 + Math.sin(angle) * radius;
 
   return {
     id: partner.id,
@@ -86,19 +209,51 @@ const initialNodes: Node[] = initialPartners.map((partner, index) => {
   };
 });
 
-const initialEdges: Edge[] = initialPartners
-  .slice(1)
-  .map((partner) => ({
-    id: `e-cssdm-${partner.id}`,
+// Create more complex connections
+const initialEdges: Edge[] = [
+  // CSSDM to primary partners
+  ...["micrologic", "zono", "inso", "cognicon", "microsoft", "aws"].map((target) => ({
+    id: `e-cssdm-${target}`,
     source: "cssdm",
-    target: partner.id,
-    animated: partner.status === "alert",
+    target,
+    animated: initialPartners.find(p => p.id === target)?.status === "alert",
     style: {
-      stroke: partner.status === "alert" ? "hsl(var(--destructive))" : "hsl(var(--primary))",
+      stroke: initialPartners.find(p => p.id === target)?.status === "alert" 
+        ? "hsl(var(--destructive))" 
+        : "hsl(var(--primary))",
       strokeWidth: 2,
     },
     type: "smoothstep",
-  }));
+  })),
+  
+  // Micrologic sub-vendors
+  { id: "e-micrologic-redhat", source: "micrologic", target: "redhat", animated: true, style: { stroke: "hsl(var(--destructive))", strokeWidth: 2 }, type: "smoothstep" },
+  { id: "e-micrologic-veeam", source: "micrologic", target: "veeam", style: { stroke: "hsl(var(--primary))", strokeWidth: 2 }, type: "smoothstep" },
+  { id: "e-micrologic-cirrus-baas", source: "micrologic", target: "cirrus-baas", style: { stroke: "hsl(var(--accent))", strokeWidth: 2 }, type: "smoothstep" },
+  { id: "e-micrologic-cirrus-paas", source: "micrologic", target: "cirrus-paas", style: { stroke: "hsl(var(--primary))", strokeWidth: 2 }, type: "smoothstep" },
+  { id: "e-micrologic-cloudconnect", source: "micrologic", target: "cloudconnect", style: { stroke: "hsl(var(--primary))", strokeWidth: 2 }, type: "smoothstep" },
+  
+  // Security vendors network
+  { id: "e-inso-cisco", source: "inso", target: "cisco", style: { stroke: "hsl(var(--primary))", strokeWidth: 2 }, type: "smoothstep" },
+  { id: "e-inso-fortinet", source: "inso", target: "fortinet", style: { stroke: "hsl(var(--accent))", strokeWidth: 2 }, type: "smoothstep" },
+  { id: "e-inso-paloalto", source: "inso", target: "paloalto", style: { stroke: "hsl(var(--primary))", strokeWidth: 2 }, type: "smoothstep" },
+  { id: "e-inso-sophos", source: "inso", target: "sophos", animated: true, style: { stroke: "hsl(var(--destructive))", strokeWidth: 2 }, type: "smoothstep" },
+  { id: "e-inso-crowdstrike", source: "inso", target: "crowdstrike", style: { stroke: "hsl(var(--primary))", strokeWidth: 2 }, type: "smoothstep" },
+  
+  // Cloud infrastructure connections
+  { id: "e-zono-microsoft", source: "zono", target: "microsoft", style: { stroke: "hsl(var(--primary))", strokeWidth: 2 }, type: "smoothstep" },
+  { id: "e-zono-aws", source: "zono", target: "aws", style: { stroke: "hsl(var(--primary))", strokeWidth: 2 }, type: "smoothstep" },
+  { id: "e-microsoft-vmware", source: "microsoft", target: "vmware", style: { stroke: "hsl(var(--primary))", strokeWidth: 2 }, type: "smoothstep" },
+  
+  // Software vendors
+  { id: "e-cognicon-oracle", source: "cognicon", target: "oracle", style: { stroke: "hsl(var(--primary))", strokeWidth: 2 }, type: "smoothstep" },
+  { id: "e-cognicon-salesforce", source: "cognicon", target: "salesforce", style: { stroke: "hsl(var(--primary))", strokeWidth: 2 }, type: "smoothstep" },
+  
+  // Cross connections
+  { id: "e-veeam-cloudconnect", source: "veeam", target: "cloudconnect", style: { stroke: "hsl(var(--primary))", strokeWidth: 1.5 }, type: "smoothstep" },
+  { id: "e-cisco-paloalto", source: "cisco", target: "paloalto", style: { stroke: "hsl(var(--primary))", strokeWidth: 1.5 }, type: "smoothstep" },
+  { id: "e-vmware-redhat", source: "vmware", target: "redhat", style: { stroke: "hsl(var(--accent))", strokeWidth: 1.5 }, type: "smoothstep" },
+];
 
 export const InteractiveNetworkGraph = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
