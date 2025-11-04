@@ -107,7 +107,14 @@ const ClientDetail = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Supplier Tree SVG */}
             <Card className="bg-card/50 backdrop-blur-sm border-border/50 md:col-span-2">
-              <CardContent className="p-12">
+              <CardContent className="p-12 relative">
+                {showAlert && (
+                  <div className="absolute top-4 right-4">
+                    <Badge variant="destructive" className="text-sm">
+                      Vulnérabilité détectée
+                    </Badge>
+                  </div>
+                )}
                 <svg width="100%" height="600" viewBox="0 0 800 600" className="overflow-visible">
                   {/* CSSDM Node */}
                   <circle cx="400" cy="80" r="50" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2" />
@@ -116,7 +123,7 @@ const ClientDetail = () => {
                   </text>
 
                   {/* Line from CSSDM to Client */}
-                  <line x1="400" y1="130" x2="400" y2="230" stroke="hsl(var(--border))" strokeWidth="2" />
+                  <line x1="400" y1="130" x2="400" y2="230" stroke="hsl(var(--primary))" strokeWidth="2" />
 
                   {/* Client Node */}
                   <circle cx="400" cy="280" r="60" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2" />
@@ -138,10 +145,31 @@ const ClientDetail = () => {
 
                       {suppliers.length > 1 && (
                         <>
-                          {/* Right Supplier (Red Hat or second) */}
-                          <line x1="400" y1="340" x2="550" y2="480" stroke="hsl(var(--border))" strokeWidth="2" />
-                          <circle cx="550" cy="480" r="45" fill="transparent" stroke="hsl(var(--border))" strokeWidth="2" />
-                          <text x="550" y="485" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="15" fontWeight="500">
+                          {/* Right Supplier (Red Hat or second) - Red when alert active */}
+                          <line 
+                            x1="400" 
+                            y1="340" 
+                            x2="550" 
+                            y2="480" 
+                            stroke={showAlert ? "hsl(var(--destructive))" : "hsl(var(--border))"} 
+                            strokeWidth="2" 
+                          />
+                          <circle 
+                            cx="550" 
+                            cy="480" 
+                            r="45" 
+                            fill="transparent" 
+                            stroke={showAlert ? "hsl(var(--destructive))" : "hsl(var(--border))"} 
+                            strokeWidth="2" 
+                          />
+                          <text 
+                            x="550" 
+                            y="485" 
+                            textAnchor="middle" 
+                            fill={showAlert ? "hsl(var(--destructive))" : "hsl(var(--foreground))"} 
+                            fontSize="15" 
+                            fontWeight="500"
+                          >
                             {suppliers[1]?.name}
                           </text>
                           <text x="550" y="545" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
