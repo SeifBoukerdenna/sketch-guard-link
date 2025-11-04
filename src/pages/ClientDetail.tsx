@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Shield, ArrowLeft, BookOpen } from "lucide-react";
+import { Shield, ArrowLeft, BookOpen, AlertTriangle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const ClientDetail = () => {
   const { clientId } = useParams();
   const navigate = useNavigate();
+  const [showAlert, setShowAlert] = useState(false);
 
   const companies = [
     { id: "micrologic", name: "Micrologic" },
@@ -71,10 +73,20 @@ const ClientDetail = () => {
             <h1 className="text-xl font-bold tracking-tight">CSSDM</h1>
           </div>
 
-          <Button variant="outline" size="sm">
-            <BookOpen className="w-4 h-4 mr-2" />
-            Scan quotidien
-          </Button>
+          <div className="flex gap-3">
+            <Button 
+              variant={showAlert ? "destructive" : "outline"} 
+              size="sm"
+              onClick={() => setShowAlert(!showAlert)}
+            >
+              <AlertTriangle className="w-4 h-4 mr-2" />
+              {showAlert ? "Alerte active" : "Simuler alerte"}
+            </Button>
+            <Button variant="outline" size="sm">
+              <BookOpen className="w-4 h-4 mr-2" />
+              Scan quotidien
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -144,31 +156,91 @@ const ClientDetail = () => {
             </Card>
 
             {/* Scan Quotidien Section */}
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50 md:col-span-1">
+            <Card className={`backdrop-blur-sm border-border/50 md:col-span-1 ${
+              showAlert ? 'bg-destructive/10 border-destructive/30' : 'bg-card/50'
+            }`}>
               <CardContent className="p-8">
                 <div className="flex items-center gap-3 mb-6">
-                  <BookOpen className="w-5 h-5 text-primary" />
-                  <h3 className="text-xl font-bold">Scan quotidien</h3>
+                  {showAlert ? (
+                    <AlertTriangle className="w-5 h-5 text-destructive" />
+                  ) : (
+                    <BookOpen className="w-5 h-5 text-primary" />
+                  )}
+                  <h3 className="text-xl font-bold">
+                    {showAlert ? "Alerte détectée" : "Scan quotidien"}
+                  </h3>
                 </div>
                 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between py-3 border-b border-border/30">
-                    <span className="text-muted-foreground">Dernier scan</span>
-                    <span className="font-medium">Aujourd'hui à 08:00</span>
+                {showAlert ? (
+                  <div className="space-y-6">
+                    <div className="space-y-3">
+                      <Badge variant="destructive" className="mb-3">
+                        Critique
+                      </Badge>
+                      <h4 className="font-bold text-destructive">
+                        Vulnérabilité détectée
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        Une vulnérabilité critique a été identifiée chez le fournisseur Red Hat affectant les services Cirrus PaaS et OpenShift.
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 pt-4 border-t border-destructive/20">
+                      <h5 className="font-semibold text-sm">Messages importants</h5>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li className="flex gap-2">
+                          <span className="text-destructive">•</span>
+                          <span>Mise à jour de sécurité requise immédiatement</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-destructive">•</span>
+                          <span>Risque d'accès non autorisé aux données</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-destructive">•</span>
+                          <span>Impact sur {selectedCompany?.name}</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="space-y-3 pt-4 border-t border-destructive/20">
+                      <h5 className="font-semibold text-sm">Étapes recommandées</h5>
+                      <ol className="space-y-2 text-sm text-muted-foreground">
+                        <li className="flex gap-2">
+                          <span className="font-semibold">1.</span>
+                          <span>Contacter Red Hat pour le patch de sécurité</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="font-semibold">2.</span>
+                          <span>Vérifier les logs d'accès récents</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="font-semibold">3.</span>
+                          <span>Appliquer le correctif dans les 24h</span>
+                        </li>
+                      </ol>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between py-3 border-b border-border/30">
-                    <span className="text-muted-foreground">Prochain scan</span>
-                    <span className="font-medium">Demain à 08:00</span>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between py-3 border-b border-border/30">
+                      <span className="text-muted-foreground">Dernier scan</span>
+                      <span className="font-medium">Aujourd'hui à 08:00</span>
+                    </div>
+                    <div className="flex items-center justify-between py-3 border-b border-border/30">
+                      <span className="text-muted-foreground">Prochain scan</span>
+                      <span className="font-medium">Demain à 08:00</span>
+                    </div>
+                    <div className="flex items-center justify-between py-3 border-b border-border/30">
+                      <span className="text-muted-foreground">Fréquence</span>
+                      <span className="font-medium">Quotidien</span>
+                    </div>
+                    <div className="flex items-center justify-between py-3">
+                      <span className="text-muted-foreground">Statut</span>
+                      <span className="font-medium text-success">Actif</span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between py-3 border-b border-border/30">
-                    <span className="text-muted-foreground">Fréquence</span>
-                    <span className="font-medium">Quotidien</span>
-                  </div>
-                  <div className="flex items-center justify-between py-3">
-                    <span className="text-muted-foreground">Statut</span>
-                    <span className="font-medium text-success">Actif</span>
-                  </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           </div>
