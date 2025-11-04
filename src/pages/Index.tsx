@@ -56,7 +56,7 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-8">
-        <div className="flex items-start gap-12 w-full max-w-6xl justify-center">
+        <div className="flex items-center gap-12 w-full max-w-6xl justify-center">
           {/* Company dropdown */}
           <div className="w-96 flex-shrink-0">
             <Select value={selectedCompany} onValueChange={handleCompanyChange}>
