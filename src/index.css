@@ -5,33 +5,36 @@
 @layer base {
   :root {
     /* Backgrounds */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 10%;
+    --background: 240 7% 18%;
+    --foreground: 0 0% 100%;
 
     /* Cards & Containers */
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card: 248 19% 32%;
+    --card-foreground: 0 0% 100%;
 
-    /* Primary Brand Color - Teal */
-    --primary: 180 100% 23%;
+    /* Primary Brand Color */
+    --primary: 248 43% 48%;
     --primary-foreground: 0 0% 100%;
 
     /* Status Colors */
-    --success: 142 76% 36%;
+    --success: 120 9% 43%;
     --success-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 73% 50%;
     --destructive-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    /* UI Elements */
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --info: 180 100% 23%;
+    --info-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
+    /* UI Elements */
+    --muted: 240 7% 25%;
+    --muted-foreground: 0 0% 65%;
+
+    --border: 240 7% 30%;
+    --input: 240 7% 30%;
 
     --radius: 0.5rem;
   }

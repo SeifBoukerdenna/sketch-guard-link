@@ -1,144 +1,95 @@
-import { useState } from "react";
-import { Shield, Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { InteractiveNetworkGraph } from "@/components/InteractiveNetworkGraph";
-import { AlertModal } from "@/components/AlertModal";
+import React, { useState } from "react";
+import { Shield, ChevronDown, CheckCircle2, FileText } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Index = () => {
-  const [showAlert, setShowAlert] = useState(false);
-  const [scanType, setScanType] = useState("daily");
+  const [selectedCompany, setSelectedCompany] = useState("micrologic");
 
-  // Simple visibility toggles - no drag & drop complexity
-  const [showWidgets, setShowWidgets] = useState({
-    ai: false,
-    collective: false,
-    recommendations: false,
-  });
-
-  const toggleWidget = (widget: keyof typeof showWidgets) => {
-    setShowWidgets((prev) => ({ ...prev, [widget]: !prev[widget] }));
-  };
-
-  const handleScan = () => {
-    console.log(`Scanning: ${scanType}`);
-    setTimeout(() => setShowAlert(true), 1000);
-  };
+  const companies = [
+    { id: "micrologic", name: "Micrologic" },
+    { id: "zens", name: "Zens Canada Corp." },
+    { id: "inso", name: "INSO INC" },
+    { id: "coginov", name: "COGINOV inc." },
+  ];
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-background">
-      {/* Simple Header */}
-      <header className="flex-none z-40 bg-background/95 backdrop-blur border-b">
-        <div className="px-6 py-3 flex items-center justify-between">
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Header */}
+      <header className="border-b border-border bg-background">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Shield className="w-6 h-6 text-primary" />
-            <div>
-              <h1 className="text-lg font-bold">SupplyChainSec</h1>
-              <p className="text-xs text-muted-foreground">Surveillance Continue</p>
-            </div>
+            <Shield className="w-8 h-8 text-primary" />
+            <h1 className="text-xl font-bold">CSSDM</h1>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Scan Type Selector */}
-            <select
-              value={scanType}
-              onChange={(e) => setScanType(e.target.value)}
-              className="px-3 py-1.5 text-sm border rounded-md bg-background"
-            >
-              <option value="daily">Scan quotidien</option>
-              <option value="weekly">Scan hebdomadaire</option>
-              <option value="monthly">Scan mensuel</option>
-            </select>
-
-            {/* Scan Button */}
-            <Button size="sm" onClick={handleScan}>
-              Lancer le scan
-            </Button>
-
-            {/* Options Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Settings className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuCheckboxItem
-                  checked={showWidgets.ai}
-                  onCheckedChange={() => toggleWidget("ai")}
-                >
-                  Traduction IA
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem
-                  checked={showWidgets.collective}
-                  onCheckedChange={() => toggleWidget("collective")}
-                >
-                  Collective Defense
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem
-                  checked={showWidgets.recommendations}
-                  onCheckedChange={() => toggleWidget("recommendations")}
-                >
-                  Recommandations
-                </DropdownMenuCheckboxItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex items-center gap-4">
+            <Select value={selectedCompany} onValueChange={setSelectedCompany}>
+              <SelectTrigger className="w-[240px] bg-primary text-primary-foreground border-none hover:bg-primary/90">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border">
+                {companies.map((company) => (
+                  <SelectItem key={company.id} value={company.id}>
+                    {company.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </header>
 
-      {/* Main Graph Area */}
-      <div className="flex-1 relative bg-background">
-        <InteractiveNetworkGraph />
+      {/* Main Content */}
+      <main className="flex-1 container mx-auto px-6 py-8">
+        <div className="max-w-2xl">
+          <Card className="bg-card border-success/30">
+            <CardContent className="p-8 space-y-6">
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+                <p className="text-success text-lg">
+                  Aucunes vulnérabilités détectées
+                </p>
+              </div>
 
-        {/* Simple Status Badge */}
-        <div className="absolute bottom-6 left-6 bg-card border rounded-lg shadow-lg px-4 py-2 flex items-center gap-3">
-          <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-          <span className="text-sm font-medium">Système sécurisé</span>
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+                <p className="text-success text-lg">
+                  Tous les certificats sont à jour
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
+                <p className="text-success text-lg">Aucun port ouvert</p>
+              </div>
+
+              <div className="pt-4 border-t border-border">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-start gap-3">
+                    <FileText className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                    <p className="text-muted-foreground">
+                      Scan quotidien effectué
+                    </p>
+                  </div>
+                  <a
+                    href="#"
+                    className="text-sm text-primary hover:underline flex items-center gap-1"
+                  >
+                    Voir le rapport
+                  </a>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-
-        {/* Optional Widget Panels - Simple overlay, no dragging */}
-        {showWidgets.ai && (
-          <div className="absolute top-6 left-6 w-80 bg-card border rounded-lg shadow-lg p-4">
-            <h3 className="font-semibold mb-2">Traduction IA</h3>
-            <p className="text-sm text-muted-foreground">
-              CVE → Risque métier compréhensible
-            </p>
-          </div>
-        )}
-
-        {showWidgets.collective && (
-          <div className="absolute top-6 right-6 w-80 bg-card border rounded-lg shadow-lg p-4">
-            <h3 className="font-semibold mb-2">Collective Defense Mesh</h3>
-            <div className="text-3xl font-bold text-primary">847</div>
-            <p className="text-sm text-muted-foreground">Organisations protégées</p>
-          </div>
-        )}
-
-        {showWidgets.recommendations && (
-          <div className="absolute top-32 right-6 w-80 bg-card border rounded-lg shadow-lg p-4">
-            <h3 className="font-semibold mb-3">Recommandations</h3>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-destructive mt-1.5" />
-                <span>Correctif Red Hat disponible</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-warning mt-1.5" />
-                <span>Mise à jour Veeam recommandée</span>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Alert Modal */}
-      {showAlert && <AlertModal onClose={() => setShowAlert(false)} />}
+      </main>
     </div>
   );
 };
