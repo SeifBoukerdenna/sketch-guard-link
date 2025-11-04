@@ -1,14 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Draggable from "react-draggable";
 import { InteractiveNetworkGraph } from "@/components/InteractiveNetworkGraph";
 import { AlertModal } from "@/components/AlertModal";
-import { Shield, FolderOpen, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Shield, FolderOpen, CheckCircle2, AlertTriangle, GripVertical, Settings, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem 
+} from "@/components/ui/dropdown-menu";
 
 const Index = () => {
   const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
+  const [widgetVisibility, setWidgetVisibility] = useState({
+    status: true,
+    alert: true,
+  });
+  
+  // Load saved positions from localStorage
+  const [positions, setPositions] = useState(() => {
+    const saved = localStorage.getItem('widget-positions');
+    return saved ? JSON.parse(saved) : {
+      status: { x: 0, y: 0 },
+      alert: { x: 0, y: 0 }
+    };
+  });
+
+  // Save positions to localStorage
+  const handleDragStop = (widgetId: string, data: any) => {
+    const newPositions = {
+      ...positions,
+      [widgetId]: { x: data.x, y: data.y }
+    };
+    setPositions(newPositions);
+    localStorage.setItem('widget-positions', JSON.stringify(newPositions));
+  };
+
+  const toggleWidget = (widget: 'status' | 'alert') => {
+    setWidgetVisibility(prev => ({ ...prev, [widget]: !prev[widget] }));
+  };
+
+  const resetPositions = () => {
+    const defaultPositions = {
+      status: { x: 0, y: 0 },
+      alert: { x: 0, y: 0 }
+    };
+    setPositions(defaultPositions);
+    localStorage.setItem('widget-positions', JSON.stringify(defaultPositions));
+  };
 
   const partners = [
     { name: "CSSDM", status: "healthy" },
@@ -42,106 +88,156 @@ const Index = () => {
                 <p className="text-xs text-muted-foreground">CSSDM</p>
               </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/scan-history")}>
-              <FolderOpen className="w-4 h-4 mr-2" />
-              Historique
-            </Button>
+            <div className="flex gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Personnaliser
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Widgets visibles</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuCheckboxItem
+                    checked={widgetVisibility.status}
+                    onCheckedChange={() => toggleWidget('status')}
+                  >
+                    Statut système
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={widgetVisibility.alert}
+                    onCheckedChange={() => toggleWidget('alert')}
+                  >
+                    Alertes
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={resetPositions}>
+                    Réinitialiser positions
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button variant="ghost" size="sm" onClick={() => navigate("/scan-history")}>
+                <FolderOpen className="w-4 h-4 mr-2" />
+                Historique
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Floating Widgets */}
       <div className="absolute inset-0 z-30 pointer-events-none">
-        <div className="container mx-auto h-full p-4 flex flex-col gap-4">
-          {/* Status Widget - Top Left */}
-          <Card className="pointer-events-auto w-80 bg-background/95 backdrop-blur-md shadow-lg">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-base">
-                {showAlert ? (
-                  <>
-                    <AlertTriangle className="w-4 h-4 text-destructive" />
-                    Vulnérabilités détectées
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 className="w-4 h-4 text-success" />
-                    Système sécurisé
-                  </>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {/* Partners List */}
-              <div className="space-y-1">
-                {partners.map((partner) => (
-                  <div
-                    key={partner.name}
-                    className="text-xs px-2 py-1 rounded hover:bg-muted transition-colors"
-                  >
-                    {partner.name}
-                  </div>
-                ))}
-              </div>
-
-              {/* Status Messages */}
-              {!showAlert && (
-                <div className="pt-2 border-t border-border space-y-1">
-                  {statusMessages.map((msg, idx) => (
-                    <div key={idx} className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <CheckCircle2 className="w-3 h-3 text-success" />
-                      {msg}
+        <div className="container mx-auto h-full p-4">
+          {/* Status Widget - Draggable */}
+          {widgetVisibility.status && (
+            <Draggable
+              position={positions.status}
+              onStop={(e, data) => handleDragStop('status', data)}
+              handle=".drag-handle"
+              bounds="parent"
+            >
+              <div className="absolute pointer-events-auto w-80">
+                <Card className="bg-background/95 backdrop-blur-md shadow-lg">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <GripVertical className="w-4 h-4 text-muted-foreground drag-handle cursor-grab active:cursor-grabbing" />
+                      {showAlert ? (
+                        <>
+                          <AlertTriangle className="w-4 h-4 text-destructive" />
+                          Vulnérabilités détectées
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 text-success" />
+                          Système sécurisé
+                        </>
+                      )}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {/* Partners List */}
+                    <div className="space-y-1">
+                      {partners.map((partner) => (
+                        <div
+                          key={partner.name}
+                          className="text-xs px-2 py-1 rounded hover:bg-muted transition-colors cursor-pointer"
+                        >
+                          {partner.name}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
 
-              {/* Test Alert Button */}
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full text-xs"
-                onClick={() => setShowAlert(!showAlert)}
-              >
-                {showAlert ? "Masquer l'alerte" : "Simuler une alerte"}
-              </Button>
-            </CardContent>
-          </Card>
+                    {/* Status Messages */}
+                    {!showAlert && (
+                      <div className="pt-2 border-t border-border space-y-1">
+                        {statusMessages.map((msg, idx) => (
+                          <div key={idx} className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <CheckCircle2 className="w-3 h-3 text-success" />
+                            {msg}
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
-          {/* Alert Widget - Bottom */}
-          {showAlert && (
-            <div className="mt-auto pointer-events-auto">
-              <Card className="bg-destructive/95 backdrop-blur-md text-destructive-foreground shadow-lg">
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-sm">
-                    <AlertTriangle className="w-4 h-4" />
-                    Alerte critique
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-xs mb-3">
-                    CVE-2025-1873 détecté dans Red Hat OpenShift 4.15
-                  </p>
-                  <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
-                      variant="secondary" 
-                      className="text-xs"
-                      onClick={() => {/* Show details */}}
+                    {/* Test Alert Button */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full text-xs"
+                      onClick={() => setShowAlert(!showAlert)}
                     >
-                      Détails
+                      {showAlert ? "Masquer l'alerte" : "Simuler une alerte"}
                     </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="text-xs bg-background/20 border-background/40"
-                      onClick={() => setShowAlert(false)}
-                    >
-                      Fermer
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </Draggable>
+          )}
+
+          {/* Alert Widget - Draggable */}
+          {showAlert && widgetVisibility.alert && (
+            <Draggable
+              position={positions.alert}
+              onStop={(e, data) => handleDragStop('alert', data)}
+              handle=".alert-drag-handle"
+              bounds="parent"
+            >
+              <div className="absolute bottom-4 pointer-events-auto">
+                <Card className="bg-destructive/95 backdrop-blur-md text-destructive-foreground shadow-lg">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="flex items-center gap-2 text-sm">
+                      <GripVertical className="w-4 h-4 alert-drag-handle cursor-grab active:cursor-grabbing" />
+                      <AlertTriangle className="w-4 h-4" />
+                      Alerte critique
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-xs mb-3">
+                      CVE-2025-1873 détecté dans Red Hat OpenShift 4.15
+                    </p>
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        variant="secondary" 
+                        className="text-xs"
+                        onClick={() => {/* Show details */}}
+                      >
+                        Détails
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="text-xs bg-background/20 border-background/40"
+                        onClick={() => setShowAlert(false)}
+                      >
+                        Fermer
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </Draggable>
           )}
         </div>
       </div>
