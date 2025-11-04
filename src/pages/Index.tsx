@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Shield, CheckCircle2, FileText, AlertTriangle, XCircle } from "lucide-react";
 import {
   Select,
@@ -11,8 +12,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [selectedCompany, setSelectedCompany] = useState("micrologic");
   const [hasAlert, setHasAlert] = useState(false);
+
+  const handleCompanyChange = (value: string) => {
+    setSelectedCompany(value);
+    navigate(`/client/${value}`);
+  };
 
   const companies = [
     { id: "micrologic", name: "Micrologic" },
@@ -50,7 +57,7 @@ const Index = () => {
         <div className="flex items-start gap-12 w-full max-w-7xl">
           {/* Left sidebar - Company dropdown */}
           <div className="w-80 flex-shrink-0">
-            <Select value={selectedCompany} onValueChange={setSelectedCompany}>
+            <Select value={selectedCompany} onValueChange={handleCompanyChange}>
               <SelectTrigger className="w-full bg-primary text-primary-foreground border-none hover:bg-primary/80 transition-all h-auto py-4 px-5 shadow-lg shadow-primary/20 rounded-xl font-medium">
                 <SelectValue />
               </SelectTrigger>
