@@ -13,12 +13,14 @@ import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const navigate = useNavigate();
-  const [selectedCompany, setSelectedCompany] = useState("micrologic");
+  const [selectedCompany, setSelectedCompany] = useState("");
   const [hasAlert, setHasAlert] = useState(false);
 
   const handleCompanyChange = (value: string) => {
-    setSelectedCompany(value);
-    navigate(`/client/${value}`);
+    if (value === "micrologic") {
+      setSelectedCompany(value);
+      navigate(`/client/${value}`);
+    }
   };
 
   const companies = [
@@ -59,14 +61,15 @@ const Index = () => {
           <div className="w-96 flex-shrink-0">
             <Select value={selectedCompany} onValueChange={handleCompanyChange}>
               <SelectTrigger className="w-full bg-primary text-primary-foreground border-none hover:bg-primary/80 transition-all h-auto py-4 px-5 shadow-lg shadow-primary/20 rounded-xl font-medium">
-                <SelectValue />
+                <SelectValue placeholder="Sélectionner un client" />
               </SelectTrigger>
-              <SelectContent className="bg-card border-border/50 rounded-xl shadow-2xl">
+              <SelectContent className="bg-card border-border/50 rounded-xl shadow-2xl z-50">
                 {companies.map((company) => (
                   <SelectItem 
                     key={company.id} 
                     value={company.id}
-                    className="hover:bg-muted/50 cursor-pointer rounded-lg"
+                    disabled={company.id !== "micrologic"}
+                    className={company.id === "micrologic" ? "hover:bg-muted/50 cursor-pointer rounded-lg" : "opacity-50 cursor-not-allowed rounded-lg"}
                   >
                     {company.name}
                   </SelectItem>
