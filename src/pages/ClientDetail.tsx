@@ -91,84 +91,87 @@ const ClientDetail = () => {
             </p>
           </div>
 
-          {/* Supplier Tree SVG */}
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-            <CardContent className="p-12">
-              <svg width="100%" height="600" viewBox="0 0 800 600" className="overflow-visible">
-                {/* CSSDM Node */}
-                <circle cx="400" cy="80" r="50" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2" />
-                <text x="400" y="85" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="16" fontWeight="500">
-                  CSSDM
-                </text>
+          {/* Grid layout for Tree and Scan Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Supplier Tree SVG */}
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50 lg:col-span-2">
+              <CardContent className="p-12">
+                <svg width="100%" height="600" viewBox="0 0 800 600" className="overflow-visible">
+                  {/* CSSDM Node */}
+                  <circle cx="400" cy="80" r="50" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2" />
+                  <text x="400" y="85" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="16" fontWeight="500">
+                    CSSDM
+                  </text>
 
-                {/* Line from CSSDM to Client */}
-                <line x1="400" y1="130" x2="400" y2="230" stroke="hsl(var(--border))" strokeWidth="2" />
+                  {/* Line from CSSDM to Client */}
+                  <line x1="400" y1="130" x2="400" y2="230" stroke="hsl(var(--border))" strokeWidth="2" />
 
-                {/* Client Node */}
-                <circle cx="400" cy="280" r="60" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2" />
-                <text x="400" y="285" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="16" fontWeight="500">
-                  {selectedCompany?.name}
-                </text>
+                  {/* Client Node */}
+                  <circle cx="400" cy="280" r="60" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2" />
+                  <text x="400" y="285" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="16" fontWeight="500">
+                    {selectedCompany?.name}
+                  </text>
 
-                {suppliers.length > 0 && (
-                  <>
-                    {/* Left Supplier (Veeam or first) */}
-                    <line x1="400" y1="340" x2="250" y2="480" stroke="hsl(var(--border))" strokeWidth="2" />
-                    <circle cx="250" cy="480" r="45" fill="transparent" stroke="hsl(var(--border))" strokeWidth="2" />
-                    <text x="250" y="485" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="15" fontWeight="500">
-                      {suppliers[0]?.name}
-                    </text>
-                    <text x="250" y="545" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
-                      ({suppliers[0]?.services.join(", ")})
-                    </text>
+                  {suppliers.length > 0 && (
+                    <>
+                      {/* Left Supplier (Veeam or first) */}
+                      <line x1="400" y1="340" x2="250" y2="480" stroke="hsl(var(--border))" strokeWidth="2" />
+                      <circle cx="250" cy="480" r="45" fill="transparent" stroke="hsl(var(--border))" strokeWidth="2" />
+                      <text x="250" y="485" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="15" fontWeight="500">
+                        {suppliers[0]?.name}
+                      </text>
+                      <text x="250" y="545" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
+                        ({suppliers[0]?.services.join(", ")})
+                      </text>
 
-                    {suppliers.length > 1 && (
-                      <>
-                        {/* Right Supplier (Red Hat or second) */}
-                        <line x1="400" y1="340" x2="550" y2="480" stroke="hsl(var(--border))" strokeWidth="2" />
-                        <circle cx="550" cy="480" r="45" fill="transparent" stroke="hsl(var(--border))" strokeWidth="2" />
-                        <text x="550" y="485" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="15" fontWeight="500">
-                          {suppliers[1]?.name}
-                        </text>
-                        <text x="550" y="545" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
-                          ({suppliers[1]?.services.join(", ")})
-                        </text>
-                      </>
-                    )}
-                  </>
-                )}
-              </svg>
-            </CardContent>
-          </Card>
+                      {suppliers.length > 1 && (
+                        <>
+                          {/* Right Supplier (Red Hat or second) */}
+                          <line x1="400" y1="340" x2="550" y2="480" stroke="hsl(var(--border))" strokeWidth="2" />
+                          <circle cx="550" cy="480" r="45" fill="transparent" stroke="hsl(var(--border))" strokeWidth="2" />
+                          <text x="550" y="485" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="15" fontWeight="500">
+                            {suppliers[1]?.name}
+                          </text>
+                          <text x="550" y="545" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
+                            ({suppliers[1]?.services.join(", ")})
+                          </text>
+                        </>
+                      )}
+                    </>
+                  )}
+                </svg>
+              </CardContent>
+            </Card>
 
-          {/* Scan Quotidien Section */}
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-            <CardContent className="p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <BookOpen className="w-5 h-5 text-primary" />
-                <h3 className="text-xl font-bold">Scan quotidien</h3>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between py-3 border-b border-border/30">
-                  <span className="text-muted-foreground">Dernier scan</span>
-                  <span className="font-medium">Aujourd'hui à 08:00</span>
+            {/* Scan Quotidien Section */}
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50 lg:col-span-1">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <BookOpen className="w-5 h-5 text-primary" />
+                  <h3 className="text-xl font-bold">Scan quotidien</h3>
                 </div>
-                <div className="flex items-center justify-between py-3 border-b border-border/30">
-                  <span className="text-muted-foreground">Prochain scan</span>
-                  <span className="font-medium">Demain à 08:00</span>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between py-3 border-b border-border/30">
+                    <span className="text-muted-foreground">Dernier scan</span>
+                    <span className="font-medium">Aujourd'hui à 08:00</span>
+                  </div>
+                  <div className="flex items-center justify-between py-3 border-b border-border/30">
+                    <span className="text-muted-foreground">Prochain scan</span>
+                    <span className="font-medium">Demain à 08:00</span>
+                  </div>
+                  <div className="flex items-center justify-between py-3 border-b border-border/30">
+                    <span className="text-muted-foreground">Fréquence</span>
+                    <span className="font-medium">Quotidien</span>
+                  </div>
+                  <div className="flex items-center justify-between py-3">
+                    <span className="text-muted-foreground">Statut</span>
+                    <span className="font-medium text-success">Actif</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between py-3 border-b border-border/30">
-                  <span className="text-muted-foreground">Fréquence</span>
-                  <span className="font-medium">Quotidien</span>
-                </div>
-                <div className="flex items-center justify-between py-3">
-                  <span className="text-muted-foreground">Statut</span>
-                  <span className="font-medium text-success">Actif</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
     </div>
