@@ -338,49 +338,40 @@ const ClientDetail = () => {
                         Vulnérabilité détectée
                       </h4>
                       <p className="text-sm text-muted-foreground">
-                        Une vulnérabilité critique a été identifiée chez le fournisseur{' '}
-                        <span className="font-semibold text-destructive">
-                          {suppliers.find(s => s.hasAlert)?.name}
-                        </span>
-                        {' '}affectant les services{' '}
-                        {suppliers.find(s => s.hasAlert)?.services.join(' et ')}.
+                        Vulnérabilité critique (CVE-2025-18723) dans Red Hat OpenShift 4.15
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Cette faille permet une élévation de privilèges via le composant de gestion 
+                        des routeurs d'entrée, exposant partiellement les clusters du CSSDM.
                       </p>
                     </div>
 
                     <div className="space-y-3 pt-4 border-t border-destructive/20">
-                      <h5 className="font-semibold text-sm">Messages importants</h5>
+                      <h5 className="font-semibold text-sm">Risques pour la CSSDM</h5>
                       <ul className="space-y-2 text-sm text-muted-foreground">
                         <li className="flex gap-2">
                           <span className="text-destructive">•</span>
-                          <span>Mise à jour de sécurité requise immédiatement</span>
+                          <span>Fuite de données personnelles</span>
                         </li>
                         <li className="flex gap-2">
                           <span className="text-destructive">•</span>
-                          <span>Risque d'accès non autorisé aux données</span>
-                        </li>
-                        <li className="flex gap-2">
-                          <span className="text-destructive">•</span>
-                          <span>Impact sur {selectedCompany?.name}</span>
+                          <span>Interruption de service du portail pédagogique et des outils internes</span>
                         </li>
                       </ul>
                     </div>
 
                     <div className="space-y-3 pt-4 border-t border-destructive/20">
-                      <h5 className="font-semibold text-sm">Étapes recommandées</h5>
-                      <ol className="space-y-2 text-sm text-muted-foreground">
+                      <h5 className="font-semibold text-sm">Recommandation</h5>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
                         <li className="flex gap-2">
-                          <span className="font-semibold">1.</span>
-                          <span>Contacter Red Hat pour le patch de sécurité</span>
+                          <span className="text-destructive">•</span>
+                          <span>Ouvrir un ticket Red Hat via Micrologic pour obtenir le correctif ou mitigation temporaire</span>
                         </li>
                         <li className="flex gap-2">
-                          <span className="font-semibold">2.</span>
-                          <span>Vérifier les logs d'accès récents</span>
+                          <span className="text-destructive">•</span>
+                          <span>Documenter l'incident dans le registre des incidents de confidentialité</span>
                         </li>
-                        <li className="flex gap-2">
-                          <span className="font-semibold">3.</span>
-                          <span>Appliquer le correctif dans les 24h</span>
-                        </li>
-                      </ol>
+                      </ul>
                     </div>
                   </div>
                 ) : (
