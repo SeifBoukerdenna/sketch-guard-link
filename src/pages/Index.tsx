@@ -1,432 +1,140 @@
-import React, { useState } from "react";
-import Draggable from "react-draggable";
+import { useState } from "react";
+import { Shield, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { InteractiveNetworkGraph } from "@/components/InteractiveNetworkGraph";
 import { AlertModal } from "@/components/AlertModal";
-import { AITranslationPanel } from "@/components/AITranslationPanel";
-import { AttackSimulation } from "@/components/AttackSimulation";
-import { CollectiveDefensePanel } from "@/components/CollectiveDefensePanel";
-import { IncidentTimeline } from "@/components/IncidentTimeline";
-import { RecommendationsPanel } from "@/components/RecommendationsPanel";
-import { BlockchainProofPanel } from "@/components/BlockchainProofPanel";
-import { DashboardPanel } from "@/components/DashboardPanel";
-import { Shield, FolderOpen, CheckCircle2, Settings, Minimize2, Maximize2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
+  DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
-  DropdownMenuCheckboxItem
 } from "@/components/ui/dropdown-menu";
 
 const Index = () => {
-  const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
+  const [scanType, setScanType] = useState("daily");
 
-  // Simplified widget visibility - showing only essential widgets
-  const [widgetVisibility, setWidgetVisibility] = useState({
-    status: false,          // Hidden by default for cleaner view
-    ai: true,               // Key feature - AI translation
-    collective: true,       // Unique selling point
-    recommendations: true,  // Actionable insights
-    timeline: false,        // Hidden by default - can show on demand
-    attack: false,          // Hidden - demo feature
-    blockchain: false,      // Hidden - advanced feature
-    dashboard: false,       // Hidden - redundant with status
-    alert: false           // Only shows when triggered
-  });
-
-  // Minimized state for each widget
-  const [widgetMinimized, setWidgetMinimized] = useState<Record<string, boolean>>({
-    status: false,
+  // Simple visibility toggles - no drag & drop complexity
+  const [showWidgets, setShowWidgets] = useState({
     ai: false,
     collective: false,
     recommendations: false,
-    timeline: false,
-    attack: false,
-    blockchain: false,
-    dashboard: false
   });
 
-  // Optimized default positions - better spacing, less overlap
-  const [positions, setPositions] = useState(() => {
-    const saved = localStorage.getItem('widget-positions');
-    return saved ? JSON.parse(saved) : {
-      status: { x: 20, y: 80 },
-      ai: { x: 20, y: 80 },
-      collective: { x: 1000, y: 80 },
-      recommendations: { x: 540, y: 80 },
-      timeline: { x: 20, y: 500 },
-      attack: { x: 1100, y: 500 },
-      blockchain: { x: 780, y: 500 },
-      dashboard: { x: 20, y: 80 },
-      alert: { x: 20, y: 280 }
-    };
-  });
-
-  const handleDragStop = (widgetId: string, data: any) => {
-    const newPositions = {
-      ...positions,
-      [widgetId]: { x: data.x, y: data.y }
-    };
-    setPositions(newPositions);
-    localStorage.setItem('widget-positions', JSON.stringify(newPositions));
+  const toggleWidget = (widget: keyof typeof showWidgets) => {
+    setShowWidgets((prev) => ({ ...prev, [widget]: !prev[widget] }));
   };
 
-  const toggleWidget = (widget: keyof typeof widgetVisibility) => {
-    setWidgetVisibility(prev => ({ ...prev, [widget]: !prev[widget] }));
+  const handleScan = () => {
+    console.log(`Scanning: ${scanType}`);
+    setTimeout(() => setShowAlert(true), 1000);
   };
-
-  const toggleMinimize = (widget: string) => {
-    setWidgetMinimized(prev => ({ ...prev, [widget]: !prev[widget] }));
-  };
-
-  const resetPositions = () => {
-    const defaultPositions = {
-      status: { x: 20, y: 80 },
-      ai: { x: 20, y: 80 },
-      collective: { x: 1000, y: 80 },
-      recommendations: { x: 540, y: 80 },
-      timeline: { x: 20, y: 500 },
-      attack: { x: 1100, y: 500 },
-      blockchain: { x: 780, y: 500 },
-      dashboard: { x: 20, y: 80 },
-      alert: { x: 20, y: 280 }
-    };
-    setPositions(defaultPositions);
-    localStorage.setItem('widget-positions', JSON.stringify(defaultPositions));
-  };
-
-  const partners = [
-    { name: "CSSDM", status: "healthy" },
-    { name: "Micrologic", status: "healthy" },
-    { name: "Zono Canada Corp", status: "healthy" },
-    { name: "INSO INC", status: "healthy" },
-    { name: "COGNIOM Inc", status: "healthy" },
-  ];
-
-  const statusMessages = [
-    "Tous les certificats sont à jour",
-    "Aucun port ouvert",
-    "Scan quotidien effectué"
-  ];
-
-  // Count visible widgets
-  const visibleCount = Object.values(widgetVisibility).filter(Boolean).length;
 
   return (
     <div className="fixed inset-0 flex flex-col bg-background">
-      {/* Compact Header - Fixed at top */}
-      <header className="flex-none z-40 bg-background/70 backdrop-blur-sm border-b border-border/50">
-        <div className="px-4 py-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-primary" />
-              <div>
-                <h1 className="text-sm font-bold">SupplyChainSec</h1>
-                <p className="text-xs text-muted-foreground hidden sm:block">Surveillance Continue - CSSDM</p>
-              </div>
+      {/* Simple Header */}
+      <header className="flex-none z-40 bg-background/95 backdrop-blur border-b">
+        <div className="px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Shield className="w-6 h-6 text-primary" />
+            <div>
+              <h1 className="text-lg font-bold">SupplyChainSec</h1>
+              <p className="text-xs text-muted-foreground">Surveillance Continue</p>
             </div>
+          </div>
 
-            <div className="flex items-center gap-2">
-              {/* Widget counter */}
-              <div className="text-xs text-muted-foreground bg-muted/80 px-2 py-1 rounded-full">
-                {visibleCount} widget{visibleCount !== 1 ? 's' : ''} actif{visibleCount !== 1 ? 's' : ''}
-              </div>
+          <div className="flex items-center gap-3">
+            {/* Scan Type Selector */}
+            <select
+              value={scanType}
+              onChange={(e) => setScanType(e.target.value)}
+              className="px-3 py-1.5 text-sm border rounded-md bg-background"
+            >
+              <option value="daily">Scan quotidien</option>
+              <option value="weekly">Scan hebdomadaire</option>
+              <option value="monthly">Scan mensuel</option>
+            </select>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8">
-                    <Settings className="w-3 h-3 mr-1" />
-                    <span className="hidden sm:inline">Personnaliser</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-64">
-                  <DropdownMenuLabel>Widgets visibles</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
+            {/* Scan Button */}
+            <Button size="sm" onClick={handleScan}>
+              Lancer le scan
+            </Button>
 
-                  <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
-                    Essentiels
-                  </DropdownMenuLabel>
-                  <DropdownMenuCheckboxItem
-                    checked={widgetVisibility.status}
-                    onCheckedChange={() => toggleWidget('status')}
-                  >
-                    Système sécurisé
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={widgetVisibility.ai}
-                    onCheckedChange={() => toggleWidget('ai')}
-                  >
-                    Traduction IA
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={widgetVisibility.collective}
-                    onCheckedChange={() => toggleWidget('collective')}
-                  >
-                    Collective Defense
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={widgetVisibility.recommendations}
-                    onCheckedChange={() => toggleWidget('recommendations')}
-                  >
-                    Recommandations
-                  </DropdownMenuCheckboxItem>
-
-                  <DropdownMenuSeparator />
-                  <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
-                    Avancés
-                  </DropdownMenuLabel>
-                  <DropdownMenuCheckboxItem
-                    checked={widgetVisibility.timeline}
-                    onCheckedChange={() => toggleWidget('timeline')}
-                  >
-                    Timeline
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={widgetVisibility.dashboard}
-                    onCheckedChange={() => toggleWidget('dashboard')}
-                  >
-                    Dashboard Multi-Rôle
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={widgetVisibility.attack}
-                    onCheckedChange={() => toggleWidget('attack')}
-                  >
-                    Simulation d'attaque
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={widgetVisibility.blockchain}
-                    onCheckedChange={() => toggleWidget('blockchain')}
-                  >
-                    Preuve Blockchain
-                  </DropdownMenuCheckboxItem>
-
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={resetPositions}>
-                    Réinitialiser positions
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <Button variant="ghost" size="sm" className="h-8" onClick={() => navigate("/scan-history")}>
-                <FolderOpen className="w-3 h-3 mr-1" />
-                <span className="hidden sm:inline">Historique</span>
-              </Button>
-            </div>
+            {/* Options Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Settings className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuCheckboxItem
+                  checked={showWidgets.ai}
+                  onCheckedChange={() => toggleWidget("ai")}
+                >
+                  Traduction IA
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={showWidgets.collective}
+                  onCheckedChange={() => toggleWidget("collective")}
+                >
+                  Collective Defense
+                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem
+                  checked={showWidgets.recommendations}
+                  onCheckedChange={() => toggleWidget("recommendations")}
+                >
+                  Recommandations
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
 
-      {/* FULLSCREEN Network Graph - Takes remaining height */}
-      <div className="flex-1 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <InteractiveNetworkGraph />
+      {/* Main Graph Area */}
+      <div className="flex-1 relative bg-background">
+        <InteractiveNetworkGraph />
+
+        {/* Simple Status Badge */}
+        <div className="absolute bottom-6 left-6 bg-card border rounded-lg shadow-lg px-4 py-2 flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+          <span className="text-sm font-medium">Système sécurisé</span>
         </div>
 
-        {/* Floating Widgets - All draggable over fullscreen graph */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="w-full h-full p-3">
-
-            {/* System Status Widget */}
-            {widgetVisibility.status && (
-              <Draggable
-                position={positions.status}
-                onStop={(e, data) => handleDragStop('status', data)}
-                handle=".drag-handle"
-                bounds="parent"
-              >
-                <div className="absolute pointer-events-auto w-80">
-                  <div className={`transition-all ${widgetMinimized.status ? 'h-12 overflow-hidden' : ''}`}>
-                    <div className="bg-background/95 backdrop-blur-md shadow-2xl border-2 rounded-lg">
-                      <div className="flex items-center justify-between px-3 py-2 bg-muted/50 drag-handle cursor-grab active:cursor-grabbing rounded-t-lg border-b">
-                        <div className="flex items-center gap-2">
-                          <Shield className="w-4 h-4 text-success" />
-                          <span className="text-xs font-semibold">Système sécurisé</span>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 w-6 p-0"
-                          onClick={() => toggleMinimize('status')}
-                        >
-                          {widgetMinimized.status ? (
-                            <Maximize2 className="w-3 h-3" />
-                          ) : (
-                            <Minimize2 className="w-3 h-3" />
-                          )}
-                        </Button>
-                      </div>
-                      {!widgetMinimized.status && (
-                        <div className="p-3 space-y-3">
-                          <div className="grid grid-cols-3 gap-2 text-center">
-                            <div className="p-2 rounded-lg bg-success/10">
-                              <div className="text-2xl font-bold text-success">98</div>
-                              <div className="text-xs text-muted-foreground">Score</div>
-                            </div>
-                            <div className="p-2 rounded-lg bg-primary/10">
-                              <div className="text-2xl font-bold text-primary">5</div>
-                              <div className="text-xs text-muted-foreground">Partenaires</div>
-                            </div>
-                            <div className="p-2 rounded-lg bg-muted">
-                              <div className="text-2xl font-bold">0</div>
-                              <div className="text-xs text-muted-foreground">Vulnérabilités</div>
-                            </div>
-                          </div>
-
-                          <div>
-                            <div className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">
-                              Partenaires actifs
-                            </div>
-                            <div className="space-y-1">
-                              {partners.map((partner) => (
-                                <div key={partner.name} className="flex items-center justify-between text-xs">
-                                  <span>{partner.name}</span>
-                                  <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="pt-2 border-t text-xs space-y-1">
-                            {statusMessages.map((msg, idx) => (
-                              <div key={idx} className="flex items-center gap-2">
-                                <CheckCircle2 className="w-3 h-3 text-success flex-shrink-0" />
-                                <span>{msg}</span>
-                              </div>
-                            ))}
-                          </div>
-
-                          <Button
-                            className="w-full"
-                            size="sm"
-                            onClick={() => setShowAlert(true)}
-                          >
-                            Simuler une alerte
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Draggable>
-            )}
-
-            {/* AI Translation Panel */}
-            {widgetVisibility.ai && (
-              <Draggable
-                position={positions.ai}
-                onStop={(e, data) => handleDragStop('ai', data)}
-                handle=".drag-handle"
-                bounds="parent"
-              >
-                <div className="absolute pointer-events-auto w-96">
-                  <AITranslationPanel
-                    isMinimized={widgetMinimized.ai}
-                    onToggleMinimize={() => toggleMinimize('ai')}
-                  />
-                </div>
-              </Draggable>
-            )}
-
-            {/* Collective Defense Panel */}
-            {widgetVisibility.collective && (
-              <Draggable
-                position={positions.collective}
-                onStop={(e, data) => handleDragStop('collective', data)}
-                handle=".drag-handle"
-                bounds="parent"
-              >
-                <div className="absolute pointer-events-auto w-80">
-                  <CollectiveDefensePanel
-                    isMinimized={widgetMinimized.collective}
-                    onToggleMinimize={() => toggleMinimize('collective')}
-                  />
-                </div>
-              </Draggable>
-            )}
-
-            {/* Recommendations Panel */}
-            {widgetVisibility.recommendations && (
-              <Draggable
-                position={positions.recommendations}
-                onStop={(e, data) => handleDragStop('recommendations', data)}
-                handle=".drag-handle"
-                bounds="parent"
-              >
-                <div className="absolute pointer-events-auto w-96">
-                  <RecommendationsPanel
-                    isMinimized={widgetMinimized.recommendations}
-                    onToggleMinimize={() => toggleMinimize('recommendations')}
-                  />
-                </div>
-              </Draggable>
-            )}
-
-            {/* Dashboard Multi-Role - Optional */}
-            {widgetVisibility.dashboard && (
-              <Draggable
-                position={positions.dashboard}
-                onStop={(e, data) => handleDragStop('dashboard', data)}
-                handle=".drag-handle"
-                bounds="parent"
-              >
-                <div className="absolute pointer-events-auto w-96">
-                  <DashboardPanel
-                    isMinimized={widgetMinimized.dashboard}
-                    onToggleMinimize={() => toggleMinimize('dashboard')}
-                  />
-                </div>
-              </Draggable>
-            )}
-
-            {/* Timeline - Optional */}
-            {widgetVisibility.timeline && (
-              <Draggable
-                position={positions.timeline}
-                onStop={(e, data) => handleDragStop('timeline', data)}
-                handle=".drag-handle"
-                bounds="parent"
-              >
-                <div className="absolute pointer-events-auto w-96">
-                  <IncidentTimeline />
-                </div>
-              </Draggable>
-            )}
-
-            {/* Attack Simulation - Optional */}
-            {widgetVisibility.attack && (
-              <Draggable
-                position={positions.attack}
-                onStop={(e, data) => handleDragStop('attack', data)}
-                handle=".drag-handle"
-                bounds="parent"
-              >
-                <div className="absolute pointer-events-auto w-96">
-                  <AttackSimulation />
-                </div>
-              </Draggable>
-            )}
-
-            {/* Blockchain Proof - Optional */}
-            {widgetVisibility.blockchain && (
-              <Draggable
-                position={positions.blockchain}
-                onStop={(e, data) => handleDragStop('blockchain', data)}
-                handle=".drag-handle"
-                bounds="parent"
-              >
-                <div className="absolute pointer-events-auto w-96">
-                  <BlockchainProofPanel />
-                </div>
-              </Draggable>
-            )}
-
+        {/* Optional Widget Panels - Simple overlay, no dragging */}
+        {showWidgets.ai && (
+          <div className="absolute top-6 left-6 w-80 bg-card border rounded-lg shadow-lg p-4">
+            <h3 className="font-semibold mb-2">Traduction IA</h3>
+            <p className="text-sm text-muted-foreground">
+              CVE → Risque métier compréhensible
+            </p>
           </div>
-        </div>
+        )}
+
+        {showWidgets.collective && (
+          <div className="absolute top-6 right-6 w-80 bg-card border rounded-lg shadow-lg p-4">
+            <h3 className="font-semibold mb-2">Collective Defense Mesh</h3>
+            <div className="text-3xl font-bold text-primary">847</div>
+            <p className="text-sm text-muted-foreground">Organisations protégées</p>
+          </div>
+        )}
+
+        {showWidgets.recommendations && (
+          <div className="absolute top-32 right-6 w-80 bg-card border rounded-lg shadow-lg p-4">
+            <h3 className="font-semibold mb-3">Recommandations</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-start gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-destructive mt-1.5" />
+                <span>Correctif Red Hat disponible</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-warning mt-1.5" />
+                <span>Mise à jour Veeam recommandée</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Alert Modal */}

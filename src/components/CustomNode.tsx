@@ -1,80 +1,75 @@
 import { memo } from "react";
 import { Handle, Position, NodeProps } from "reactflow";
 import { Shield, AlertTriangle, CheckCircle2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 interface Partner {
   id: string;
   name: string;
   status: "healthy" | "alert" | "warning";
-  vulnerabilities?: number;
   description: string;
-  lastScan: string;
+  vulnerabilities?: number;
 }
 
 export const CustomNode = memo(({ data, selected }: NodeProps<Partner>) => {
-  const isCentral = data.id === "cssdm";
   const isAlert = data.status === "alert";
+  const isWarning = data.status === "warning";
+  const isHealthy = data.status === "healthy";
 
   return (
     <div className="relative">
+      {/* Top connection point */}
       <Handle
         type="target"
         position={Position.Top}
-        className="!w-3 !h-3 !bg-primary !border-2 !border-primary-foreground"
+        className="!w-3 !h-3 !bg-primary !border-2 !border-background"
       />
 
+      {/* Node Card */}
       <div
-        className={`px-4 py-3 rounded-xl border-2 shadow-lg transition-all duration-300 min-w-[140px] ${
-          isCentral
-            ? "gradient-cyber border-primary/50 shadow-primary/20"
-            : isAlert
-            ? "bg-destructive/10 border-destructive border-glow-alert"
-            : "bg-card border-primary/30"
-        } ${selected ? "border-4 scale-105" : "hover:scale-102"} ${
-          isAlert ? "animate-pulse" : ""
-        }`}
+        className={`
+          px-4 py-3 rounded-lg border-2 shadow-lg transition-all
+          min-w-[140px] cursor-pointer
+          ${isAlert ? "bg-destructive/10 border-destructive" : ""}
+          ${isWarning ? "bg-warning/10 border-warning" : ""}
+          ${isHealthy ? "bg-card border-success" : ""}
+          ${selected ? "scale-110 ring-2 ring-primary" : "hover:scale-105"}
+        `}
       >
+        {/* Icon */}
         <div className="flex items-center justify-center mb-2">
           <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center ${
-              isCentral
-                ? "bg-primary-foreground/20"
-                : isAlert
-                ? "bg-destructive/20"
-                : "bg-success/20"
-            }`}
+            className={`
+              w-12 h-12 rounded-full flex items-center justify-center
+              ${isAlert ? "bg-destructive/20" : ""}
+              ${isWarning ? "bg-warning/20" : ""}
+              ${isHealthy ? "bg-success/20" : ""}
+            `}
           >
-            {isCentral ? (
-              <Shield className="w-6 h-6 text-primary-foreground" />
-            ) : isAlert ? (
-              <AlertTriangle className="w-6 h-6 text-destructive" />
-            ) : (
-              <CheckCircle2 className="w-6 h-6 text-success" />
-            )}
+            {isAlert && <AlertTriangle className="w-6 h-6 text-destructive" />}
+            {isWarning && <Shield className="w-6 h-6 text-warning" />}
+            {isHealthy && <CheckCircle2 className="w-6 h-6 text-success" />}
           </div>
         </div>
 
+        {/* Text */}
         <div className="text-center">
-          <p className={`font-bold text-sm mb-1 ${isCentral ? "text-primary-foreground" : ""}`}>
-            {data.name}
-          </p>
-          <p className={`text-xs ${isCentral ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
-            {data.description}
-          </p>
-          
-          {data.vulnerabilities && (
-            <Badge variant="destructive" className="mt-2 text-xs px-2 py-0">
+          <p className="font-semibold text-sm mb-1">{data.name}</p>
+          <p className="text-xs text-muted-foreground">{data.description}</p>
+
+          {/* Vulnerability badge */}
+          {data.vulnerabilities && data.vulnerabilities > 0 && (
+            <div className="mt-2 inline-block px-2 py-0.5 bg-destructive text-destructive-foreground rounded text-xs font-medium">
               {data.vulnerabilities} alerte{data.vulnerabilities > 1 ? "s" : ""}
-            </Badge>
+            </div>
           )}
         </div>
       </div>
 
+      {/* Bottom connection point */}
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!w-3 !h-3 !bg-primary !border-2 !border-primary-foreground"
+        className="!w-3 !h-3 !bg-primary !border-2 !border-background"
       />
     </div>
   );

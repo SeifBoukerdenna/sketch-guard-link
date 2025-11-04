@@ -1,68 +1,87 @@
-import { AlertTriangle, FileText } from "lucide-react";
+import { AlertTriangle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Card } from "@/components/ui/card";
 
 interface AlertModalProps {
   onClose: () => void;
 }
 
-const AlertModal = ({ onClose }: AlertModalProps) => {
+export const AlertModal = ({ onClose }: AlertModalProps) => {
   return (
-    <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-destructive">
-            <AlertTriangle className="w-5 h-5" />
-            Alerte détectée
-          </DialogTitle>
-        </DialogHeader>
-        
-        <div className="space-y-6 py-4">
-          <div>
-            <h3 className="font-semibold text-lg mb-2">
-              Vulnérabilité critique (CVE-2025-1873) dans Red Hat OpenShift 4.15
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Cette faille permet une élévation de privilèges via le composant de gestion des 
-              routeurs d'entrée, exposant partiellement les clusters du CSSDM.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-2 text-destructive">Risques pour le CSSDM</h4>
-            <ul className="space-y-1 text-sm">
-              <li>• Fuite de données personnelles</li>
-              <li>• Interruption de service du portail pédagogique et des outils internes</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold mb-2">Recommandation</h4>
-            <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>• Ouvrir un ticket Red Hat via Micrologic pour obtenir le correctif ou mitigation temporaire</li>
-              <li>• Documenter l'incident dans le registre des incidents de confidentialité</li>
-            </ul>
-          </div>
-
-          <div className="flex gap-3 pt-4">
-            <Button className="flex-1">
-              <FileText className="w-4 h-4 mr-2" />
-              Générer un rapport
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+      <Card className="w-full max-w-lg border-2 border-destructive shadow-2xl">
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-destructive/20 flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-destructive" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold">Vulnérabilité détectée</h2>
+                <p className="text-sm text-muted-foreground">Niveau: Critique</p>
+              </div>
+            </div>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              <X className="w-4 h-4" />
             </Button>
-            <Button variant="outline" onClick={onClose}>
-              Fermer
+          </div>
+
+          {/* Content */}
+          <div className="space-y-4 mb-6">
+            {/* CVE Info */}
+            <div className="p-4 bg-destructive/5 border border-destructive/20 rounded-lg">
+              <div className="font-semibold mb-1">CVE-2025-1873</div>
+              <div className="text-sm text-muted-foreground">
+                Vulnérabilité critique dans Red Hat OpenShift 4.15
+              </div>
+            </div>
+
+            {/* Description */}
+            <div>
+              <h3 className="font-semibold mb-2 text-sm">Description</h3>
+              <p className="text-sm text-muted-foreground">
+                Une élévation de privilèges via le composant de gestion des routeurs d'entrée,
+                exposant partiellement les clusters du CSSDM.
+              </p>
+            </div>
+
+            {/* Impact */}
+            <div>
+              <h3 className="font-semibold mb-2 text-sm">Impact métier</h3>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li className="flex items-start gap-2">
+                  <span className="text-destructive mt-0.5">•</span>
+                  <span>Risque d'interruption du portail pédagogique</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-destructive mt-0.5">•</span>
+                  <span>Fuite potentielle de données personnelles</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Recommendation */}
+            <div>
+              <h3 className="font-semibold mb-2 text-sm">Recommandation</h3>
+              <p className="text-sm text-muted-foreground">
+                Ouvrir un ticket Red Hat via Micrologic pour obtenir le correctif ou
+                mitigation temporaire.
+              </p>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3">
+            <Button className="flex-1" variant="default">
+              Ouvrir un ticket
+            </Button>
+            <Button className="flex-1" variant="outline" onClick={onClose}>
+              Marquer comme vu
             </Button>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </Card>
+    </div>
   );
 };
-
-export { AlertModal };
