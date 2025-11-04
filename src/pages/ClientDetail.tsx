@@ -183,41 +183,41 @@ const ClientDetail = () => {
                     </Badge>
                   </div>
                 )}
-                <svg width="100%" height="700" viewBox="0 0 900 700" className="overflow-visible">
+                <svg width="100%" height="700" viewBox="0 0 700 700" className="overflow-visible">
                   {/* CSSDM Node */}
-                  <circle cx="450" cy="60" r="45" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2" />
-                  <text x="450" y="65" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="16" fontWeight="600">
+                  <circle cx="350" cy="80" r="50" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="3" />
+                  <text x="350" y="87" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="18" fontWeight="600">
                     CSSDM
                   </text>
 
                   {/* Line from CSSDM to Client */}
-                  <line x1="450" y1="105" x2="450" y2="180" stroke="hsl(var(--primary))" strokeWidth="2" />
+                  <line x1="350" y1="130" x2="350" y2="200" stroke="hsl(var(--primary))" strokeWidth="3" />
 
                   {/* Client Node */}
-                  <circle cx="450" cy="230" r="55" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2.5" />
-                  <text x="450" y="235" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="17" fontWeight="600">
+                  <circle cx="350" cy="260" r="60" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="3" />
+                  <text x="350" y="267" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="19" fontWeight="600">
                     {selectedCompany?.name}
                   </text>
 
                   {/* Suppliers */}
                   {suppliers.map((supplier, index) => {
                     const totalSuppliers = suppliers.length;
-                    const spacing = 240;
-                    const startX = 450 - ((totalSuppliers - 1) * spacing) / 2;
+                    const spacing = 200;
+                    const startX = 350 - ((totalSuppliers - 1) * spacing) / 2;
                     const supplierX = startX + index * spacing;
-                    const supplierY = 420;
+                    const supplierY = 440;
                     const isAlert = showAlert && supplier.hasAlert;
                     
                     return (
                       <g key={supplier.name}>
                         {/* Line from Client to Supplier */}
                         <line 
-                          x1="450" 
-                          y1="285" 
+                          x1="350" 
+                          y1="320" 
                           x2={supplierX} 
-                          y2={supplierY - 50} 
+                          y2={supplierY - 55} 
                           stroke={isAlert ? "hsl(var(--destructive))" : "hsl(var(--border))"} 
-                          strokeWidth={isAlert ? "2.5" : "2"}
+                          strokeWidth={isAlert ? "3" : "2.5"}
                           className={isAlert ? "animate-pulse" : ""}
                         />
                         
@@ -225,7 +225,7 @@ const ClientDetail = () => {
                         <circle 
                           cx={supplierX} 
                           cy={supplierY} 
-                          r="48" 
+                          r="55"
                           fill={isAlert ? "hsl(var(--destructive) / 0.1)" : "transparent"} 
                           stroke={isAlert ? "hsl(var(--destructive))" : "hsl(var(--border))"} 
                           strokeWidth={isAlert ? "2.5" : "2"}
@@ -233,61 +233,61 @@ const ClientDetail = () => {
                         />
                         <text 
                           x={supplierX} 
-                          y={supplierY + 5} 
+                          y={supplierY + 6} 
                           textAnchor="middle" 
                           fill={isAlert ? "hsl(var(--destructive))" : "hsl(var(--foreground))"} 
-                          fontSize="15" 
+                          fontSize="16" 
                           fontWeight="600"
                         >
                           {supplier.name}
                         </text>
                         
                         {/* Services text */}
-                        <text x={supplierX} y={supplierY + 70} textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="11">
+                        <text x={supplierX} y={supplierY + 78} textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
                           {supplier.services[0]}
                         </text>
                         {supplier.services[1] && (
-                          <text x={supplierX} y={supplierY + 85} textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="11">
+                          <text x={supplierX} y={supplierY + 95} textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
                             {supplier.services[1]}
                           </text>
                         )}
 
                         {/* Sub-suppliers */}
                         {supplier.subSuppliers.map((subSupplier, subIndex) => {
-                          const subSpacing = 100;
+                          const subSpacing = 90;
                           const subsCount = supplier.subSuppliers.length;
                           const subStartX = supplierX - ((subsCount - 1) * subSpacing) / 2;
                           const subX = subStartX + subIndex * subSpacing;
-                          const subY = 600;
+                          const subY = 620;
                           
                           return (
                             <g key={subSupplier.name}>
                               {/* Line to sub-supplier */}
                               <line 
                                 x1={supplierX} 
-                                y1={supplierY + 48} 
+                                y1={supplierY + 55} 
                                 x2={subX} 
-                                y2={subY - 30} 
+                                y2={subY - 35} 
                                 stroke="hsl(var(--border) / 0.5)" 
-                                strokeWidth="1.5"
-                                strokeDasharray="4,4"
+                                strokeWidth="2"
+                                strokeDasharray="5,5"
                               />
                               
                               {/* Sub-supplier Node */}
                               <circle 
                                 cx={subX} 
                                 cy={subY} 
-                                r="30" 
+                                r="35" 
                                 fill="transparent" 
                                 stroke="hsl(var(--border) / 0.6)" 
-                                strokeWidth="1.5"
+                                strokeWidth="2"
                               />
                               <text 
                                 x={subX} 
-                                y={subY + 4} 
+                                y={subY + 5} 
                                 textAnchor="middle" 
                                 fill="hsl(var(--muted-foreground))" 
-                                fontSize="11" 
+                                fontSize="12" 
                                 fontWeight="500"
                               >
                                 {subSupplier.name.length > 12 
@@ -389,9 +389,21 @@ const ClientDetail = () => {
                       <span className="text-muted-foreground">Fréquence</span>
                       <span className="font-medium">Quotidien</span>
                     </div>
-                    <div className="flex items-center justify-between py-3">
+                    <div className="flex items-center justify-between py-3 border-b border-border/30">
                       <span className="text-muted-foreground">Statut</span>
                       <span className="font-medium text-success">Actif</span>
+                    </div>
+                    <div className="flex items-center justify-between py-3 border-b border-border/30">
+                      <span className="text-muted-foreground">Fournisseurs surveillés</span>
+                      <span className="font-medium">{suppliers.length}</span>
+                    </div>
+                    <div className="flex items-center justify-between py-3 border-b border-border/30">
+                      <span className="text-muted-foreground">Vulnérabilités</span>
+                      <span className="font-medium text-success">0 détectée</span>
+                    </div>
+                    <div className="flex items-center justify-between py-3">
+                      <span className="text-muted-foreground">Niveau de conformité</span>
+                      <span className="font-medium text-success">100%</span>
                     </div>
                   </div>
                 )}
