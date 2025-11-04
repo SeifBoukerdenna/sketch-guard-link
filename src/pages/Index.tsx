@@ -54,9 +54,9 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-8">
-        <div className="flex items-start gap-12 w-full max-w-7xl">
-          {/* Left sidebar - Company dropdown */}
-          <div className="w-80 flex-shrink-0">
+        <div className="flex items-start gap-12 w-full max-w-6xl justify-center">
+          {/* Company dropdown */}
+          <div className="w-96 flex-shrink-0">
             <Select value={selectedCompany} onValueChange={handleCompanyChange}>
               <SelectTrigger className="w-full bg-primary text-primary-foreground border-none hover:bg-primary/80 transition-all h-auto py-4 px-5 shadow-lg shadow-primary/20 rounded-xl font-medium">
                 <SelectValue />
@@ -73,28 +73,6 @@ const Index = () => {
                 ))}
               </SelectContent>
             </Select>
-
-            {/* Additional Info Card */}
-            <Card className={`mt-6 ${hasAlert ? 'bg-destructive/5 border-destructive/30' : 'bg-card/30 border-border/30'}`}>
-              <CardContent className="p-5">
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Dernière analyse</span>
-                    <span className="font-medium">Aujourd'hui</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Prochaine analyse</span>
-                    <span className="font-medium">Demain 08:00</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Score de sécurité</span>
-                    <span className={`font-bold ${hasAlert ? 'text-destructive' : 'text-success'}`}>
-                      {hasAlert ? '47/100' : '98/100'}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
           {/* Status Card - Positive State */}
