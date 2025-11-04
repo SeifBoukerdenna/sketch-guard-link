@@ -82,63 +82,49 @@ const Index = () => {
           {!hasAlert && (
             <div className="flex-1">
               <Card className="bg-card/50 backdrop-blur-sm border border-success/20 shadow-xl shadow-success/5 rounded-2xl overflow-hidden">
-                <CardContent className="p-12 space-y-8">
+                <CardContent className="p-8 space-y-6">
                   {/* Main Status Section */}
                   <div>
-                    <h2 className="text-xl font-bold mb-6 text-foreground/90">État de sécurité</h2>
-                    <div className="space-y-5">
-                      <div className="flex items-start gap-4 group">
+                    <h2 className="text-lg font-bold mb-4 text-foreground/90">État de sécurité</h2>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3 group">
                         <div className="p-1.5 rounded-full bg-success/10 mt-0.5">
-                          <CheckCircle2 className="w-5 h-5 text-success" />
+                          <CheckCircle2 className="w-4 h-4 text-success" />
                         </div>
                         <div>
-                          <p className="text-success text-base font-medium leading-relaxed">
+                          <p className="text-success text-sm font-medium leading-relaxed">
                             Aucunes vulnérabilités détectées
                           </p>
-                          <p className="text-sm text-muted-foreground mt-1">
+                          <p className="text-xs text-muted-foreground mt-0.5">
                             Toutes les dépendances sont à jour et sécurisées
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-start gap-4 group">
+                      <div className="flex items-start gap-3 group">
                         <div className="p-1.5 rounded-full bg-success/10 mt-0.5">
-                          <CheckCircle2 className="w-5 h-5 text-success" />
+                          <CheckCircle2 className="w-4 h-4 text-success" />
                         </div>
                         <div>
-                          <p className="text-success text-base font-medium leading-relaxed">
+                          <p className="text-success text-sm font-medium leading-relaxed">
                             Tous les certificats sont à jour
                           </p>
-                          <p className="text-sm text-muted-foreground mt-1">
+                          <p className="text-xs text-muted-foreground mt-0.5">
                             Certificats SSL valides jusqu'au 15 mars 2026
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-start gap-4 group">
+                      <div className="flex items-start gap-3 group">
                         <div className="p-1.5 rounded-full bg-success/10 mt-0.5">
-                          <CheckCircle2 className="w-5 h-5 text-success" />
+                          <CheckCircle2 className="w-4 h-4 text-success" />
                         </div>
                         <div>
-                          <p className="text-success text-base font-medium leading-relaxed">
+                          <p className="text-success text-sm font-medium leading-relaxed">
                             Aucun port ouvert
                           </p>
-                          <p className="text-sm text-muted-foreground mt-1">
+                          <p className="text-xs text-muted-foreground mt-0.5">
                             Pare-feu actif, tous les services sont sécurisés
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-4 group">
-                        <div className="p-1.5 rounded-full bg-success/10 mt-0.5">
-                          <CheckCircle2 className="w-5 h-5 text-success" />
-                        </div>
-                        <div>
-                          <p className="text-success text-base font-medium leading-relaxed">
-                            Sauvegardes à jour
-                          </p>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Dernière sauvegarde effectuée il y a 2 heures
                           </p>
                         </div>
                       </div>
@@ -146,33 +132,33 @@ const Index = () => {
                   </div>
 
                   {/* Metrics Section */}
-                  <div className="grid grid-cols-3 gap-6 pt-6 border-t border-border/30">
+                  <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border/30">
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-success">100%</div>
-                      <div className="text-sm text-muted-foreground mt-1">Disponibilité</div>
+                      <div className="text-2xl font-bold text-success">100%</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">Disponibilité</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-foreground">0</div>
-                      <div className="text-sm text-muted-foreground mt-1">Incidents</div>
+                      <div className="text-2xl font-bold text-foreground">0</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">Incidents</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-foreground">24</div>
-                      <div className="text-sm text-muted-foreground mt-1">Services actifs</div>
+                      <div className="text-2xl font-bold text-foreground">24</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">Services actifs</div>
                     </div>
                   </div>
 
                   {/* Footer */}
-                  <div className="pt-6 border-t border-border/30">
+                  <div className="pt-4 border-t border-border/30">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <FileText className="w-5 h-5 text-muted-foreground/70" />
-                        <p className="text-muted-foreground text-sm">
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-muted-foreground/70" />
+                        <p className="text-muted-foreground text-xs">
                           Scan quotidien effectué à 08:00
                         </p>
                       </div>
                       <a
                         href="#"
-                        className="text-sm text-primary hover:text-primary/80 font-medium transition-colors underline-offset-4 hover:underline"
+                        className="text-xs text-primary hover:text-primary/80 font-medium transition-colors underline-offset-4 hover:underline"
                       >
                         Voir le rapport complet
                       </a>
@@ -187,24 +173,24 @@ const Index = () => {
           {hasAlert && (
             <div className="flex-1">
               <Card className="bg-card/50 backdrop-blur-sm border border-destructive/30 shadow-xl shadow-destructive/10 rounded-2xl overflow-hidden">
-                <CardContent className="p-12 space-y-8">
+                <CardContent className="p-8 space-y-6">
                   {/* Alert Header */}
-                  <div className="flex items-center gap-3 pb-4 border-b border-destructive/20">
+                  <div className="flex items-center gap-3 pb-3 border-b border-destructive/20">
                     <div className="p-2 rounded-full bg-destructive/10">
-                      <AlertTriangle className="w-6 h-6 text-destructive" />
+                      <AlertTriangle className="w-5 h-5 text-destructive" />
                     </div>
-                    <h2 className="text-xl font-bold text-destructive">Alerte détectée</h2>
+                    <h2 className="text-lg font-bold text-destructive">Alerte détectée</h2>
                   </div>
 
                   {/* Critical Alert */}
-                  <div className="bg-destructive/5 border border-destructive/20 rounded-xl p-6 space-y-4">
-                    <div className="flex items-start gap-3">
-                      <XCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />
-                      <div className="space-y-2">
-                        <p className="text-destructive font-semibold text-base">
+                  <div className="bg-destructive/5 border border-destructive/20 rounded-xl p-4 space-y-3">
+                    <div className="flex items-start gap-2">
+                      <XCircle className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />
+                      <div className="space-y-1.5">
+                        <p className="text-destructive font-semibold text-sm">
                           Vulnérabilité critique (CVE-2025-18723) dans Red Hat OpenShift 4.15
                         </p>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
+                        <p className="text-xs text-muted-foreground leading-relaxed">
                           Cette faille permet une élévation de privilèges via le composant de gestion 
                           des routeurs d'entrée, exposant partiellement les clusters du CSSDM.
                         </p>
@@ -214,15 +200,15 @@ const Index = () => {
 
                   {/* Risks Section */}
                   <div>
-                    <h3 className="text-base font-semibold text-destructive mb-4">Risques pour la CSSDM</h3>
-                    <div className="space-y-3">
-                      <div className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-destructive mt-2 flex-shrink-0" />
-                        <p className="text-sm text-muted-foreground">Fuite de données personnelles</p>
+                    <h3 className="text-sm font-semibold text-destructive mb-3">Risques pour la CSSDM</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-destructive mt-1.5 flex-shrink-0" />
+                        <p className="text-xs text-muted-foreground">Fuite de données personnelles</p>
                       </div>
-                      <div className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-destructive mt-2 flex-shrink-0" />
-                        <p className="text-sm text-muted-foreground">
+                      <div className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-destructive mt-1.5 flex-shrink-0" />
+                        <p className="text-xs text-muted-foreground">
                           Interruption de service du portail pédagogique et des outils internes
                         </p>
                       </div>
@@ -230,18 +216,18 @@ const Index = () => {
                   </div>
 
                   {/* Recommendations */}
-                  <div className="bg-card/30 border border-border/30 rounded-xl p-6 space-y-4">
-                    <h3 className="text-base font-semibold text-foreground/90">Recommandations</h3>
-                    <div className="space-y-3">
-                      <div className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
-                        <p className="text-sm text-muted-foreground">
+                  <div className="bg-card/30 border border-border/30 rounded-xl p-4 space-y-3">
+                    <h3 className="text-sm font-semibold text-foreground/90">Recommandations</h3>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                        <p className="text-xs text-muted-foreground">
                           Ouvrir un ticket Red Hat via Micrologic pour obtenir le correctif ou mitigation temporaire
                         </p>
                       </div>
-                      <div className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
-                        <p className="text-sm text-muted-foreground">
+                      <div className="flex items-start gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                        <p className="text-xs text-muted-foreground">
                           Documenter l'incident dans le registre des incidents de confidentialité
                         </p>
                       </div>
@@ -249,33 +235,33 @@ const Index = () => {
                   </div>
 
                   {/* Metrics Section */}
-                  <div className="grid grid-cols-3 gap-6 pt-6 border-t border-border/30">
+                  <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border/30">
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-warning">87%</div>
-                      <div className="text-sm text-muted-foreground mt-1">Disponibilité</div>
+                      <div className="text-2xl font-bold text-warning">87%</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">Disponibilité</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-destructive">3</div>
-                      <div className="text-sm text-muted-foreground mt-1">Incidents</div>
+                      <div className="text-2xl font-bold text-destructive">3</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">Incidents</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-foreground">21</div>
-                      <div className="text-sm text-muted-foreground mt-1">Services actifs</div>
+                      <div className="text-2xl font-bold text-foreground">21</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">Services actifs</div>
                     </div>
                   </div>
 
                   {/* Footer */}
-                  <div className="pt-6 border-t border-border/30">
+                  <div className="pt-4 border-t border-border/30">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <FileText className="w-5 h-5 text-muted-foreground/70" />
-                        <p className="text-muted-foreground text-sm">
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-muted-foreground/70" />
+                        <p className="text-muted-foreground text-xs">
                           Alerte détectée à 14:23
                         </p>
                       </div>
                       <a
                         href="#"
-                        className="text-sm text-primary hover:text-primary/80 font-medium transition-colors underline-offset-4 hover:underline"
+                        className="text-xs text-primary hover:text-primary/80 font-medium transition-colors underline-offset-4 hover:underline"
                       >
                         Voir le rapport d'incident
                       </a>
