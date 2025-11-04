@@ -1,114 +1,121 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Brain, ArrowRight, AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sparkles, AlertTriangle, ArrowRight, Minimize2, Maximize2, ExternalLink } from "lucide-react";
 
-interface CVETranslation {
-  cve: string;
-  technical: string;
-  businessRisk: string;
-  impact: string;
-  severity: "critical" | "high" | "medium";
-  affectedPartners: string[];
+interface AITranslationPanelProps {
+  isMinimized?: boolean;
+  onToggleMinimize?: () => void;
 }
 
-const mockTranslations: CVETranslation[] = [
-  {
-    cve: "CVE-2025-1873",
-    technical: "Buffer overflow in Red Hat OpenShift authentication module",
-    businessRisk: "Risque d'interruption de production",
-    impact: "Un attaquant pourrait accéder aux données sensibles et causer un arrêt des services pendant 48-72h",
-    severity: "critical",
-    affectedPartners: ["Micrologic", "INSO INC"]
-  },
-  {
-    cve: "CVE-2024-8392",
-    technical: "SQL injection vulnerability in legacy API endpoint",
-    businessRisk: "Exposition de données clients",
-    impact: "Fuite potentielle de 50,000+ dossiers clients avec risque réglementaire (RGPD, Loi 25)",
-    severity: "high",
-    affectedPartners: ["COGNIOM Inc"]
-  },
-  {
-    cve: "CVE-2024-7145",
-    technical: "Outdated SSL/TLS protocol support",
-    businessRisk: "Non-conformité réglementaire",
-    impact: "Échec d'audit DORA/NIS2 potentiel avec sanctions jusqu'à 10M€",
-    severity: "medium",
-    affectedPartners: ["Zono Canada Corp"]
-  }
-];
-
-export const AITranslationPanel = () => {
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case "critical": return "bg-destructive text-destructive-foreground";
-      case "high": return "bg-warning text-warning-foreground";
-      case "medium": return "bg-info text-info-foreground";
-      default: return "bg-muted text-muted-foreground";
-    }
-  };
-
+export const AITranslationPanel = ({ isMinimized = false, onToggleMinimize }: AITranslationPanelProps) => {
   return (
-    <Card className="bg-background/95 backdrop-blur-md border-glow">
-      <CardHeader className="pb-3 bg-muted/30">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Brain className="w-5 h-5 text-primary" />
-          Traduction IA - CVE → Risque Métier
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3 max-h-96 overflow-y-auto">
-        {mockTranslations.map((item, idx) => (
-          <div 
-            key={item.cve}
-            className="p-3 rounded-lg border border-border hover:border-primary/50 transition-all animate-slide-in"
-            style={{ animationDelay: `${idx * 100}ms` }}
-          >
-            {/* CVE Header */}
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <code className="text-xs font-mono bg-muted px-2 py-0.5 rounded">{item.cve}</code>
-                <Badge className={`text-xs ${getSeverityColor(item.severity)}`}>
-                  {item.severity.toUpperCase()}
-                </Badge>
-              </div>
-              <AlertTriangle className="w-4 h-4 text-destructive" />
-            </div>
-
-            {/* Translation */}
-            <div className="space-y-2">
-              <div className="flex items-start gap-2">
-                <div className="text-xs text-muted-foreground flex-1">
-                  <span className="font-semibold">Technique:</span> {item.technical}
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-2 text-primary">
-                <ArrowRight className="w-4 h-4 flex-shrink-0" />
-                <div className="h-px bg-primary/20 flex-1"></div>
-              </div>
-
-              <div className="text-xs space-y-1">
-                <div className="font-semibold text-foreground">
-                  🎯 {item.businessRisk}
-                </div>
-                <div className="text-muted-foreground">
-                  {item.impact}
-                </div>
-              </div>
-
-              {/* Affected Partners */}
-              <div className="flex flex-wrap gap-1 pt-1">
-                {item.affectedPartners.map(partner => (
-                  <span key={partner} className="text-xs bg-destructive/10 text-destructive px-2 py-0.5 rounded">
-                    {partner}
-                  </span>
-                ))}
-              </div>
-            </div>
+    <div className={`transition-all ${isMinimized ? 'h-12 overflow-hidden' : ''}`}>
+      <Card className="bg-background/95 backdrop-blur-md border-2 shadow-2xl">
+        <CardHeader className="pb-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 drag-handle cursor-grab active:cursor-grabbing">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-xs font-medium">
+              <Sparkles className="w-4 h-4 text-purple-500" />
+              Traduction IA - CVE → Risque Métier
+            </CardTitle>
+            {onToggleMinimize && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0"
+                onClick={onToggleMinimize}
+              >
+                {isMinimized ? (
+                  <Maximize2 className="w-3 h-3" />
+                ) : (
+                  <Minimize2 className="w-3 h-3" />
+                )}
+              </Button>
+            )}
           </div>
-        ))}
-      </CardContent>
-    </Card>
+        </CardHeader>
+        {!isMinimized && (
+          <CardContent className="space-y-3 pt-3">
+            {/* CVE Input Section */}
+            <div className="p-3 rounded-lg bg-muted/50 border-2 border-dashed">
+              <div className="flex items-start gap-2">
+                <Badge className="bg-destructive text-destructive-foreground text-xs flex-shrink-0">
+                  CRITICAL
+                </Badge>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm font-bold font-mono">CVE-2025-1873</span>
+                    <ArrowRight className="w-3 h-3 text-muted-foreground" />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    <span className="font-semibold">Technique:</span> Buffer overflow in Red Hat OpenShift
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* AI Translation */}
+            <div className="flex justify-center">
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30">
+                <Sparkles className="w-3 h-3 text-purple-500 animate-pulse" />
+                <span className="text-xs font-semibold">IA contextualise</span>
+              </div>
+            </div>
+
+            {/* Business Risk Output */}
+            <div className="p-3 rounded-lg bg-gradient-to-br from-destructive/10 to-warning/10 border-2 border-destructive/30">
+              <div className="flex items-start gap-2 mb-2">
+                <AlertTriangle className="w-4 h-4 text-destructive flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <h4 className="text-sm font-bold text-destructive mb-1">
+                    Risque d'interruption de production
+                  </h4>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Accès données sensibles + arrêt services 48-72h
+                  </p>
+
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Système:</span>
+                      <Badge variant="outline" className="text-xs">Micrologic</Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Exposées:</span>
+                      <Badge variant="outline" className="text-xs">INSO INC</Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Impact:</span>
+                      <Badge className="bg-destructive text-destructive-foreground text-xs">~250K$</Badge>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Button size="sm" className="w-full mt-2" variant="destructive">
+                <ExternalLink className="w-3 h-3 mr-1" />
+                Voir recommandations
+              </Button>
+            </div>
+
+            {/* Metrics */}
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="p-2 rounded-lg bg-success/10">
+                <div className="text-lg font-bold text-success">94%</div>
+                <div className="text-xs text-muted-foreground">Confiance</div>
+              </div>
+              <div className="p-2 rounded-lg bg-warning/10">
+                <div className="text-lg font-bold text-warning">8.9</div>
+                <div className="text-xs text-muted-foreground">CVSS</div>
+              </div>
+              <div className="p-2 rounded-lg bg-info/10">
+                <div className="text-lg font-bold text-info">12h</div>
+                <div className="text-xs text-muted-foreground">Délai</div>
+              </div>
+            </div>
+          </CardContent>
+        )}
+      </Card>
+    </div>
   );
 };

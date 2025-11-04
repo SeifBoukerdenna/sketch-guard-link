@@ -1,118 +1,195 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Lightbulb, ExternalLink, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AlertCircle, CheckCircle2, Clock, ChevronDown, ChevronUp, ExternalLink, Minimize2, Maximize2 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
-interface Recommendation {
-  id: string;
-  priority: "high" | "medium" | "low";
-  title: string;
-  description: string;
-  action: string;
-  estimatedTime: string;
-  impact: string;
+interface RecommendationsPanelProps {
+  isMinimized?: boolean;
+  onToggleMinimize?: () => void;
 }
 
-const mockRecommendations: Recommendation[] = [
-  {
-    id: "1",
-    priority: "high",
-    title: "Patcher CVE-2025-1873 immédiatement",
-    description: "Vulnérabilité critique dans Red Hat OpenShift 4.15",
-    action: "Mettre à jour vers version 4.15.3",
-    estimatedTime: "2-4 heures",
-    impact: "Élimine risque d'interruption production"
-  },
-  {
-    id: "2",
-    priority: "high",
-    title: "Renforcer authentification chez Micrologic",
-    description: "MFA non activé sur 12 comptes administrateurs",
-    action: "Déployer MFA obligatoire",
-    estimatedTime: "30 minutes",
-    impact: "Réduit risque de compromission de 87%"
-  },
-  {
-    id: "3",
-    priority: "medium",
-    title: "Renouveler certificats SSL",
-    description: "3 certificats expirent dans 15 jours",
-    action: "Renouveler via Let's Encrypt",
-    estimatedTime: "1 heure",
-    impact: "Maintient conformité DORA/NIS2"
-  },
-  {
-    id: "4",
-    priority: "medium",
-    title: "Audit de conformité Loi 25",
-    description: "Mise à jour requise suite à nouveau règlement",
-    action: "Générer rapport automatique",
-    estimatedTime: "15 minutes",
-    impact: "Évite sanctions jusqu'à 25M$"
-  }
-];
+export const RecommendationsPanel = ({ isMinimized = false, onToggleMinimize }: RecommendationsPanelProps) => {
+  const [isTimelineOpen, setIsTimelineOpen] = useState(false);
 
-export const RecommendationsPanel = () => {
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high": return "bg-destructive text-destructive-foreground";
-      case "medium": return "bg-warning text-warning-foreground";
-      case "low": return "bg-info text-info-foreground";
-      default: return "bg-muted text-muted-foreground";
+  const recommendations = [
+    {
+      id: 1,
+      priority: "HIGH",
+      title: "Patcher CVE-2025-1873 immédiatement",
+      description: "Vulnérabilité critique Red Hat OpenShift",
+      impact: "Réduit risque de 87%",
+      action: "Déployer MFA",
+      time: "2-4h"
+    },
+    {
+      id: 2,
+      priority: "HIGH",
+      title: "Renforcer auth. chez Micrologic",
+      description: "MFA non activé sur 12 comptes admin",
+      impact: "Élimine interruption",
+      action: "Vers v.4.2",
+      time: "30min"
+    },
+    {
+      id: 3,
+      priority: "MEDIUM",
+      title: "Renouveler certificats SSL",
+      description: "3 certificats expirent dans 15j",
+      impact: "Maintient DORA",
+      action: "Auto-renouvellement",
+      time: "1h"
     }
+  ];
+
+  const timelineEvents = [
+    {
+      time: "16:47",
+      title: "Scan terminé",
+      description: "847 partenaires - Aucune menace",
+      type: "success"
+    },
+    {
+      time: "14:23",
+      title: "Attaque prévenue",
+      description: "Exploitation bloquée via COGNIOM",
+      type: "warning"
+    },
+    {
+      time: "2j",
+      title: "Conformité à jour",
+      description: "SSL renouvelés (3 partenaires)",
+      type: "success"
+    }
+  ];
+
+  const getPriorityColor = (priority: string) => {
+    return priority === "HIGH"
+      ? "bg-destructive text-destructive-foreground"
+      : "bg-warning text-warning-foreground";
+  };
+
+  const getTimelineIcon = (type: string) => {
+    return type === "success" ? (
+      <CheckCircle2 className="w-3 h-3 text-success" />
+    ) : (
+      <AlertCircle className="w-3 h-3 text-warning" />
+    );
   };
 
   return (
-    <Card className="bg-background/95 backdrop-blur-md border-glow-warning">
-      <CardHeader className="pb-3 bg-warning/10">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Lightbulb className="w-5 h-5 text-warning" />
-          Recommandations Automatiques
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3 max-h-96 overflow-y-auto">
-        {mockRecommendations.map((rec, idx) => (
-          <div 
-            key={rec.id}
-            className="p-3 rounded-lg border border-border hover:border-primary/50 transition-all animate-slide-in"
-            style={{ animationDelay: `${idx * 100}ms` }}
-          >
-            {/* Header */}
-            <div className="flex items-start justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Badge className={`text-xs ${getPriorityColor(rec.priority)}`}>
-                  {rec.priority.toUpperCase()}
-                </Badge>
-                <span className="text-xs text-muted-foreground">
-                  ⏱️ {rec.estimatedTime}
+    <div className={`transition-all ${isMinimized ? 'h-12 overflow-hidden' : ''}`}>
+      <Card className="bg-background/95 backdrop-blur-md border-2 shadow-2xl">
+        <CardHeader className="pb-2 bg-muted/50 drag-handle cursor-grab active:cursor-grabbing">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-xs font-medium">
+              <AlertCircle className="w-4 h-4 text-warning" />
+              Recommandations Auto
+            </CardTitle>
+            {onToggleMinimize && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0"
+                onClick={onToggleMinimize}
+              >
+                {isMinimized ? (
+                  <Maximize2 className="w-3 h-3" />
+                ) : (
+                  <Minimize2 className="w-3 h-3" />
+                )}
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+        {!isMinimized && (
+          <CardContent className="space-y-2 pt-3">
+            {/* Recommendations - Compact */}
+            <div className="space-y-2">
+              {recommendations.map((rec) => (
+                <div
+                  key={rec.id}
+                  className="p-2 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1 mb-1">
+                        <Badge className={getPriorityColor(rec.priority) + " text-xs"}>
+                          {rec.priority}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          <Clock className="w-2 h-2 mr-1" />
+                          {rec.time}
+                        </Badge>
+                      </div>
+                      <h4 className="text-xs font-semibold mb-1 leading-tight">{rec.title}</h4>
+                      <p className="text-xs text-muted-foreground">{rec.description}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1 mt-2 pt-2 border-t text-xs">
+                    <CheckCircle2 className="w-3 h-3 text-success flex-shrink-0" />
+                    <span className="text-muted-foreground text-xs">{rec.impact}</span>
+                  </div>
+
+                  <Button size="sm" className="w-full mt-2 h-7 text-xs" variant="outline">
+                    <ExternalLink className="w-3 h-3 mr-1" />
+                    {rec.action}
+                  </Button>
+                </div>
+              ))}
+            </div>
+
+            {/* Collapsible Timeline */}
+            <Collapsible open={isTimelineOpen} onOpenChange={setIsTimelineOpen}>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" className="w-full justify-between h-8" size="sm">
+                  <span className="flex items-center gap-2 text-xs">
+                    <Clock className="w-3 h-3" />
+                    Timeline
+                  </span>
+                  {isTimelineOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                </Button>
+              </CollapsibleTrigger>
+
+              <CollapsibleContent className="mt-2">
+                <div className="space-y-2">
+                  {timelineEvents.map((event, idx) => (
+                    <div key={idx} className="relative pl-5 pb-2 last:pb-0">
+                      {idx !== timelineEvents.length - 1 && (
+                        <div className="absolute left-1.5 top-5 bottom-0 w-px bg-border" />
+                      )}
+
+                      <div className="absolute left-0 top-1">
+                        {getTimelineIcon(event.type)}
+                      </div>
+
+                      <div className="bg-muted/50 rounded-lg p-2 border">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-semibold">{event.title}</span>
+                          <Badge variant="outline" className="text-xs">{event.time}</Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{event.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+
+            {/* Network Effect */}
+            <div className="pt-2 border-t">
+              <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-primary/10 border border-primary/30">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-xs font-medium">
+                  Chaque membre renforce tous
                 </span>
               </div>
             </div>
-
-            {/* Content */}
-            <div className="space-y-2">
-              <h4 className="text-sm font-semibold">{rec.title}</h4>
-              <p className="text-xs text-muted-foreground">{rec.description}</p>
-              
-              <div className="flex items-start gap-2 text-xs bg-muted/50 p-2 rounded">
-                <CheckCircle2 className="w-3 h-3 text-success mt-0.5 flex-shrink-0" />
-                <span className="text-muted-foreground">{rec.impact}</span>
-              </div>
-
-              {/* Action */}
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="w-full text-xs mt-2"
-              >
-                <ExternalLink className="w-3 h-3 mr-1" />
-                {rec.action}
-              </Button>
-            </div>
-          </div>
-        ))}
-      </CardContent>
-    </Card>
+          </CardContent>
+        )}
+      </Card>
+    </div>
   );
 };

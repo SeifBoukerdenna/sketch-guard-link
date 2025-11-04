@@ -9,52 +9,64 @@ import { IncidentTimeline } from "@/components/IncidentTimeline";
 import { RecommendationsPanel } from "@/components/RecommendationsPanel";
 import { BlockchainProofPanel } from "@/components/BlockchainProofPanel";
 import { DashboardPanel } from "@/components/DashboardPanel";
-import { Shield, FolderOpen, CheckCircle2, AlertTriangle, GripVertical, Settings } from "lucide-react";
+import { Shield, FolderOpen, CheckCircle2, Settings, Minimize2, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuCheckboxItem 
+  DropdownMenuCheckboxItem
 } from "@/components/ui/dropdown-menu";
 
 const Index = () => {
   const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
+
+  // Simplified widget visibility - showing only essential widgets
   const [widgetVisibility, setWidgetVisibility] = useState({
-    status: true,
-    alert: true,
-    ai: true,
-    attack: false,
-    collective: true,
-    timeline: true,
-    recommendations: true,
-    blockchain: false,
-    dashboard: true
+    status: false,          // Hidden by default for cleaner view
+    ai: true,               // Key feature - AI translation
+    collective: true,       // Unique selling point
+    recommendations: true,  // Actionable insights
+    timeline: false,        // Hidden by default - can show on demand
+    attack: false,          // Hidden - demo feature
+    blockchain: false,      // Hidden - advanced feature
+    dashboard: false,       // Hidden - redundant with status
+    alert: false           // Only shows when triggered
   });
-  
-  // Load saved positions from localStorage
+
+  // Minimized state for each widget
+  const [widgetMinimized, setWidgetMinimized] = useState<Record<string, boolean>>({
+    status: false,
+    ai: false,
+    collective: false,
+    recommendations: false,
+    timeline: false,
+    attack: false,
+    blockchain: false,
+    dashboard: false
+  });
+
+  // Optimized default positions - better spacing, less overlap
   const [positions, setPositions] = useState(() => {
     const saved = localStorage.getItem('widget-positions');
     return saved ? JSON.parse(saved) : {
       status: { x: 20, y: 80 },
-      alert: { x: 20, y: 400 },
-      ai: { x: 420, y: 80 },
-      attack: { x: 820, y: 80 },
-      collective: { x: 420, y: 460 },
-      timeline: { x: 820, y: 460 },
-      recommendations: { x: 1220, y: 80 },
-      blockchain: { x: 1220, y: 460 },
-      dashboard: { x: 20, y: 80 }
+      ai: { x: 20, y: 80 },
+      collective: { x: 1000, y: 80 },
+      recommendations: { x: 540, y: 80 },
+      timeline: { x: 20, y: 500 },
+      attack: { x: 1100, y: 500 },
+      blockchain: { x: 780, y: 500 },
+      dashboard: { x: 20, y: 80 },
+      alert: { x: 20, y: 280 }
     };
   });
 
-  // Save positions to localStorage
   const handleDragStop = (widgetId: string, data: any) => {
     const newPositions = {
       ...positions,
@@ -68,17 +80,21 @@ const Index = () => {
     setWidgetVisibility(prev => ({ ...prev, [widget]: !prev[widget] }));
   };
 
+  const toggleMinimize = (widget: string) => {
+    setWidgetMinimized(prev => ({ ...prev, [widget]: !prev[widget] }));
+  };
+
   const resetPositions = () => {
     const defaultPositions = {
       status: { x: 20, y: 80 },
-      alert: { x: 20, y: 400 },
-      ai: { x: 420, y: 80 },
-      attack: { x: 820, y: 80 },
-      collective: { x: 420, y: 460 },
-      timeline: { x: 820, y: 460 },
-      recommendations: { x: 1220, y: 80 },
-      blockchain: { x: 1220, y: 460 },
-      dashboard: { x: 20, y: 80 }
+      ai: { x: 20, y: 80 },
+      collective: { x: 1000, y: 80 },
+      recommendations: { x: 540, y: 80 },
+      timeline: { x: 20, y: 500 },
+      attack: { x: 1100, y: 500 },
+      blockchain: { x: 780, y: 500 },
+      dashboard: { x: 20, y: 80 },
+      alert: { x: 20, y: 280 }
     };
     setPositions(defaultPositions);
     localStorage.setItem('widget-positions', JSON.stringify(defaultPositions));
@@ -98,46 +114,48 @@ const Index = () => {
     "Scan quotidien effectué"
   ];
 
-  return (
-    <div className="relative h-screen overflow-hidden bg-background">
-      {/* Network Graph as Background */}
-      <div className="absolute inset-0 z-0">
-        <InteractiveNetworkGraph />
-      </div>
+  // Count visible widgets
+  const visibleCount = Object.values(widgetVisibility).filter(Boolean).length;
 
-      {/* Header Overlay */}
-      <header className="absolute top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container mx-auto px-4 py-3">
+  return (
+    <div className="fixed inset-0 flex flex-col bg-background">
+      {/* Compact Header - Fixed at top */}
+      <header className="flex-none z-40 bg-background/70 backdrop-blur-sm border-b border-border/50">
+        <div className="px-4 py-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Shield className="w-6 h-6 text-primary" />
+              <Shield className="w-5 h-5 text-primary" />
               <div>
-                <h1 className="text-sm font-semibold">SupplyChainSec</h1>
-                <p className="text-xs text-muted-foreground">CSSDM</p>
+                <h1 className="text-sm font-bold">SupplyChainSec</h1>
+                <p className="text-xs text-muted-foreground hidden sm:block">Surveillance Continue - CSSDM</p>
               </div>
             </div>
-            <div className="flex gap-2">
+
+            <div className="flex items-center gap-2">
+              {/* Widget counter */}
+              <div className="text-xs text-muted-foreground bg-muted/80 px-2 py-1 rounded-full">
+                {visibleCount} widget{visibleCount !== 1 ? 's' : ''} actif{visibleCount !== 1 ? 's' : ''}
+              </div>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <Settings className="w-4 h-4 mr-2" />
-                    Personnaliser
+                  <Button variant="outline" size="sm" className="h-8">
+                    <Settings className="w-3 h-3 mr-1" />
+                    <span className="hidden sm:inline">Personnaliser</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent align="end" className="w-64">
                   <DropdownMenuLabel>Widgets visibles</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem
-                    checked={widgetVisibility.dashboard}
-                    onCheckedChange={() => toggleWidget('dashboard')}
-                  >
-                    Dashboard Multi-Rôle
-                  </DropdownMenuCheckboxItem>
+
+                  <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
+                    Essentiels
+                  </DropdownMenuLabel>
                   <DropdownMenuCheckboxItem
                     checked={widgetVisibility.status}
                     onCheckedChange={() => toggleWidget('status')}
                   >
-                    Statut Système
+                    Système sécurisé
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
                     checked={widgetVisibility.ai}
@@ -146,10 +164,10 @@ const Index = () => {
                     Traduction IA
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={widgetVisibility.attack}
-                    onCheckedChange={() => toggleWidget('attack')}
+                    checked={widgetVisibility.collective}
+                    onCheckedChange={() => toggleWidget('collective')}
                   >
-                    Simulation Attaque
+                    Collective Defense
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
                     checked={widgetVisibility.recommendations}
@@ -157,302 +175,262 @@ const Index = () => {
                   >
                     Recommandations
                   </DropdownMenuCheckboxItem>
+
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel className="text-xs text-muted-foreground font-normal">
+                    Avancés
+                  </DropdownMenuLabel>
                   <DropdownMenuCheckboxItem
                     checked={widgetVisibility.timeline}
                     onCheckedChange={() => toggleWidget('timeline')}
                   >
-                    Timeline Incidents
+                    Timeline
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={widgetVisibility.collective}
-                    onCheckedChange={() => toggleWidget('collective')}
+                    checked={widgetVisibility.dashboard}
+                    onCheckedChange={() => toggleWidget('dashboard')}
                   >
-                    Collective Defense
+                    Dashboard Multi-Rôle
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={widgetVisibility.attack}
+                    onCheckedChange={() => toggleWidget('attack')}
+                  >
+                    Simulation d'attaque
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
                     checked={widgetVisibility.blockchain}
                     onCheckedChange={() => toggleWidget('blockchain')}
                   >
-                    Preuves Blockchain
+                    Preuve Blockchain
                   </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={widgetVisibility.alert}
-                    onCheckedChange={() => toggleWidget('alert')}
-                  >
-                    Alertes
-                  </DropdownMenuCheckboxItem>
+
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={resetPositions}>
                     Réinitialiser positions
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button variant="ghost" size="sm" onClick={() => navigate("/scan-history")}>
-                <FolderOpen className="w-4 h-4 mr-2" />
-                Historique
+
+              <Button variant="ghost" size="sm" className="h-8" onClick={() => navigate("/scan-history")}>
+                <FolderOpen className="w-3 h-3 mr-1" />
+                <span className="hidden sm:inline">Historique</span>
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Floating Widgets */}
-      <div className="absolute inset-0 z-30 pointer-events-none">
-        <div className="w-full h-full p-4">
-          {/* Dashboard Multi-Role */}
-          {widgetVisibility.dashboard && (
-            <Draggable
-              position={positions.dashboard}
-              onStop={(e, data) => handleDragStop('dashboard', data)}
-              handle=".drag-handle"
-              bounds="parent"
-            >
-              <div className="absolute pointer-events-auto w-96">
-                <div className="drag-handle cursor-grab active:cursor-grabbing">
-                  <DashboardPanel />
-                </div>
-              </div>
-            </Draggable>
-          )}
+      {/* FULLSCREEN Network Graph - Takes remaining height */}
+      <div className="flex-1 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <InteractiveNetworkGraph />
+        </div>
 
-          {/* Status Widget - Draggable */}
-          {widgetVisibility.status && (
-            <Draggable
-              position={positions.status}
-              onStop={(e, data) => handleDragStop('status', data)}
-              handle=".drag-handle"
-              bounds="parent"
-            >
-              <div className="absolute pointer-events-auto w-80">
-                <Card className="bg-background/95 backdrop-blur-md shadow-lg border-2">
-                  <CardHeader className="pb-3 bg-muted/50 drag-handle cursor-grab active:cursor-grabbing">
-                    <CardTitle className="flex items-center gap-2 text-sm font-medium">
-                      <GripVertical className="w-4 h-4 text-muted-foreground" />
-                      {showAlert ? (
-                        <>
-                          <AlertTriangle className="w-4 h-4 text-destructive" />
-                          Vulnérabilités détectées
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle2 className="w-4 h-4 text-success" />
-                          Système sécurisé
-                        </>
-                      )}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3 pt-4">
-                    {/* Key Metrics */}
-                    <div className="grid grid-cols-3 gap-2 pb-3 border-b border-border">
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-success">98</div>
-                        <div className="text-[10px] text-muted-foreground">Score sécu</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-lg font-bold">{partners.length}</div>
-                        <div className="text-[10px] text-muted-foreground">Partenaires</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-success">0</div>
-                        <div className="text-[10px] text-muted-foreground">Vulnérabilités</div>
-                      </div>
-                    </div>
+        {/* Floating Widgets - All draggable over fullscreen graph */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="w-full h-full p-3">
 
-                    {/* Partners List */}
-                    <div>
-                      <div className="text-[10px] font-semibold text-muted-foreground mb-1 uppercase tracking-wide">Partenaires actifs</div>
-                      <div className="space-y-0.5">
-                        {partners.map((partner) => (
-                          <div
-                            key={partner.name}
-                            className="text-xs px-2 py-1.5 rounded hover:bg-muted transition-colors cursor-pointer flex items-center justify-between"
-                          >
-                            <span>{partner.name}</span>
-                            <div className="w-2 h-2 rounded-full bg-success"></div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Status Messages */}
-                    {!showAlert && (
-                      <div className="pt-2 border-t border-border">
-                        <div className="text-[10px] font-semibold text-muted-foreground mb-1 uppercase tracking-wide">Dernier scan: Aujourd'hui 14:32</div>
-                        <div className="space-y-1">
-                          {statusMessages.map((msg, idx) => (
-                            <div key={idx} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                              <CheckCircle2 className="w-3 h-3 text-success flex-shrink-0" />
-                              <span>{msg}</span>
-                            </div>
-                          ))}
+            {/* System Status Widget */}
+            {widgetVisibility.status && (
+              <Draggable
+                position={positions.status}
+                onStop={(e, data) => handleDragStop('status', data)}
+                handle=".drag-handle"
+                bounds="parent"
+              >
+                <div className="absolute pointer-events-auto w-80">
+                  <div className={`transition-all ${widgetMinimized.status ? 'h-12 overflow-hidden' : ''}`}>
+                    <div className="bg-background/95 backdrop-blur-md shadow-2xl border-2 rounded-lg">
+                      <div className="flex items-center justify-between px-3 py-2 bg-muted/50 drag-handle cursor-grab active:cursor-grabbing rounded-t-lg border-b">
+                        <div className="flex items-center gap-2">
+                          <Shield className="w-4 h-4 text-success" />
+                          <span className="text-xs font-semibold">Système sécurisé</span>
                         </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0"
+                          onClick={() => toggleMinimize('status')}
+                        >
+                          {widgetMinimized.status ? (
+                            <Maximize2 className="w-3 h-3" />
+                          ) : (
+                            <Minimize2 className="w-3 h-3" />
+                          )}
+                        </Button>
                       </div>
-                    )}
+                      {!widgetMinimized.status && (
+                        <div className="p-3 space-y-3">
+                          <div className="grid grid-cols-3 gap-2 text-center">
+                            <div className="p-2 rounded-lg bg-success/10">
+                              <div className="text-2xl font-bold text-success">98</div>
+                              <div className="text-xs text-muted-foreground">Score</div>
+                            </div>
+                            <div className="p-2 rounded-lg bg-primary/10">
+                              <div className="text-2xl font-bold text-primary">5</div>
+                              <div className="text-xs text-muted-foreground">Partenaires</div>
+                            </div>
+                            <div className="p-2 rounded-lg bg-muted">
+                              <div className="text-2xl font-bold">0</div>
+                              <div className="text-xs text-muted-foreground">Vulnérabilités</div>
+                            </div>
+                          </div>
 
-                    {/* Test Alert Button */}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full text-xs mt-2"
-                      onClick={() => setShowAlert(!showAlert)}
-                    >
-                      {showAlert ? "Masquer l'alerte" : "Simuler une alerte"}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </Draggable>
-          )}
+                          <div>
+                            <div className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">
+                              Partenaires actifs
+                            </div>
+                            <div className="space-y-1">
+                              {partners.map((partner) => (
+                                <div key={partner.name} className="flex items-center justify-between text-xs">
+                                  <span>{partner.name}</span>
+                                  <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
 
-          {/* AI Translation Panel */}
-          {widgetVisibility.ai && (
-            <Draggable
-              position={positions.ai}
-              onStop={(e, data) => handleDragStop('ai', data)}
-              handle=".drag-handle"
-              bounds="parent"
-            >
-              <div className="absolute pointer-events-auto w-96">
-                <div className="drag-handle cursor-grab active:cursor-grabbing">
-                  <AITranslationPanel />
+                          <div className="pt-2 border-t text-xs space-y-1">
+                            {statusMessages.map((msg, idx) => (
+                              <div key={idx} className="flex items-center gap-2">
+                                <CheckCircle2 className="w-3 h-3 text-success flex-shrink-0" />
+                                <span>{msg}</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          <Button
+                            className="w-full"
+                            size="sm"
+                            onClick={() => setShowAlert(true)}
+                          >
+                            Simuler une alerte
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </Draggable>
-          )}
+              </Draggable>
+            )}
 
-          {/* Attack Simulation */}
-          {widgetVisibility.attack && (
-            <Draggable
-              position={positions.attack}
-              onStop={(e, data) => handleDragStop('attack', data)}
-              handle=".drag-handle"
-              bounds="parent"
-            >
-              <div className="absolute pointer-events-auto w-96">
-                <div className="drag-handle cursor-grab active:cursor-grabbing">
-                  <AttackSimulation />
+            {/* AI Translation Panel */}
+            {widgetVisibility.ai && (
+              <Draggable
+                position={positions.ai}
+                onStop={(e, data) => handleDragStop('ai', data)}
+                handle=".drag-handle"
+                bounds="parent"
+              >
+                <div className="absolute pointer-events-auto w-96">
+                  <AITranslationPanel
+                    isMinimized={widgetMinimized.ai}
+                    onToggleMinimize={() => toggleMinimize('ai')}
+                  />
                 </div>
-              </div>
-            </Draggable>
-          )}
+              </Draggable>
+            )}
 
-          {/* Recommendations Panel */}
-          {widgetVisibility.recommendations && (
-            <Draggable
-              position={positions.recommendations}
-              onStop={(e, data) => handleDragStop('recommendations', data)}
-              handle=".drag-handle"
-              bounds="parent"
-            >
-              <div className="absolute pointer-events-auto w-96">
-                <div className="drag-handle cursor-grab active:cursor-grabbing">
-                  <RecommendationsPanel />
+            {/* Collective Defense Panel */}
+            {widgetVisibility.collective && (
+              <Draggable
+                position={positions.collective}
+                onStop={(e, data) => handleDragStop('collective', data)}
+                handle=".drag-handle"
+                bounds="parent"
+              >
+                <div className="absolute pointer-events-auto w-80">
+                  <CollectiveDefensePanel
+                    isMinimized={widgetMinimized.collective}
+                    onToggleMinimize={() => toggleMinimize('collective')}
+                  />
                 </div>
-              </div>
-            </Draggable>
-          )}
+              </Draggable>
+            )}
 
-          {/* Collective Defense */}
-          {widgetVisibility.collective && (
-            <Draggable
-              position={positions.collective}
-              onStop={(e, data) => handleDragStop('collective', data)}
-              handle=".drag-handle"
-              bounds="parent"
-            >
-              <div className="absolute pointer-events-auto w-96">
-                <div className="drag-handle cursor-grab active:cursor-grabbing">
-                  <CollectiveDefensePanel />
+            {/* Recommendations Panel */}
+            {widgetVisibility.recommendations && (
+              <Draggable
+                position={positions.recommendations}
+                onStop={(e, data) => handleDragStop('recommendations', data)}
+                handle=".drag-handle"
+                bounds="parent"
+              >
+                <div className="absolute pointer-events-auto w-96">
+                  <RecommendationsPanel
+                    isMinimized={widgetMinimized.recommendations}
+                    onToggleMinimize={() => toggleMinimize('recommendations')}
+                  />
                 </div>
-              </div>
-            </Draggable>
-          )}
+              </Draggable>
+            )}
 
-          {/* Incident Timeline */}
-          {widgetVisibility.timeline && (
-            <Draggable
-              position={positions.timeline}
-              onStop={(e, data) => handleDragStop('timeline', data)}
-              handle=".drag-handle"
-              bounds="parent"
-            >
-              <div className="absolute pointer-events-auto w-96">
-                <div className="drag-handle cursor-grab active:cursor-grabbing">
+            {/* Dashboard Multi-Role - Optional */}
+            {widgetVisibility.dashboard && (
+              <Draggable
+                position={positions.dashboard}
+                onStop={(e, data) => handleDragStop('dashboard', data)}
+                handle=".drag-handle"
+                bounds="parent"
+              >
+                <div className="absolute pointer-events-auto w-96">
+                  <DashboardPanel
+                    isMinimized={widgetMinimized.dashboard}
+                    onToggleMinimize={() => toggleMinimize('dashboard')}
+                  />
+                </div>
+              </Draggable>
+            )}
+
+            {/* Timeline - Optional */}
+            {widgetVisibility.timeline && (
+              <Draggable
+                position={positions.timeline}
+                onStop={(e, data) => handleDragStop('timeline', data)}
+                handle=".drag-handle"
+                bounds="parent"
+              >
+                <div className="absolute pointer-events-auto w-96">
                   <IncidentTimeline />
                 </div>
-              </div>
-            </Draggable>
-          )}
+              </Draggable>
+            )}
 
-          {/* Blockchain Proof */}
-          {widgetVisibility.blockchain && (
-            <Draggable
-              position={positions.blockchain}
-              onStop={(e, data) => handleDragStop('blockchain', data)}
-              handle=".drag-handle"
-              bounds="parent"
-            >
-              <div className="absolute pointer-events-auto w-96">
-                <div className="drag-handle cursor-grab active:cursor-grabbing">
+            {/* Attack Simulation - Optional */}
+            {widgetVisibility.attack && (
+              <Draggable
+                position={positions.attack}
+                onStop={(e, data) => handleDragStop('attack', data)}
+                handle=".drag-handle"
+                bounds="parent"
+              >
+                <div className="absolute pointer-events-auto w-96">
+                  <AttackSimulation />
+                </div>
+              </Draggable>
+            )}
+
+            {/* Blockchain Proof - Optional */}
+            {widgetVisibility.blockchain && (
+              <Draggable
+                position={positions.blockchain}
+                onStop={(e, data) => handleDragStop('blockchain', data)}
+                handle=".drag-handle"
+                bounds="parent"
+              >
+                <div className="absolute pointer-events-auto w-96">
                   <BlockchainProofPanel />
                 </div>
-              </div>
-            </Draggable>
-          )}
+              </Draggable>
+            )}
 
-          {/* Alert Widget - Draggable */}
-          {showAlert && widgetVisibility.alert && (
-            <Draggable
-              position={positions.alert}
-              onStop={(e, data) => handleDragStop('alert', data)}
-              handle=".alert-drag-handle"
-              bounds="parent"
-            >
-              <div className="absolute bottom-4 pointer-events-auto">
-                <Card className="bg-destructive/95 backdrop-blur-md text-destructive-foreground shadow-lg">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="flex items-center gap-2 text-sm">
-                      <GripVertical className="w-4 h-4 alert-drag-handle cursor-grab active:cursor-grabbing" />
-                      <AlertTriangle className="w-4 h-4" />
-                      Alerte critique
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-xs mb-3">
-                      CVE-2025-1873 détecté dans Red Hat OpenShift 4.15
-                    </p>
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        variant="secondary" 
-                        className="text-xs"
-                        onClick={() => {/* Show details */}}
-                      >
-                        Détails
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="text-xs bg-background/20 border-background/40"
-                        onClick={() => setShowAlert(false)}
-                      >
-                        Fermer
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </Draggable>
-          )}
+          </div>
         </div>
       </div>
 
       {/* Alert Modal */}
-      {showAlert && (
-        <div className="absolute inset-0 z-50 pointer-events-auto">
-          <AlertModal onClose={() => setShowAlert(false)} />
-        </div>
-      )}
+      {showAlert && <AlertModal onClose={() => setShowAlert(false)} />}
     </div>
   );
 };
