@@ -1,17 +1,8 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Shield, ArrowLeft, BookOpen } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import ReactFlow, { 
-  Node, 
-  Edge, 
-  Controls, 
-  Background,
-  BackgroundVariant,
-  MarkerType
-} from "reactflow";
-import "reactflow/dist/style.css";
 
 const ClientDetail = () => {
   const { clientId } = useParams();
@@ -60,108 +51,6 @@ const ClientDetail = () => {
 
   const suppliers = supplierTree[clientId as keyof typeof supplierTree] || [];
 
-  // Créer les nœuds et edges pour le graphe
-  const { nodes, edges } = useMemo(() => {
-    const nodes: Node[] = [
-      {
-        id: "cssdm",
-        data: { label: "CSSDM" },
-        position: { x: 400, y: 50 },
-        style: {
-          background: "hsl(var(--primary) / 0.1)",
-          border: "2px solid hsl(var(--primary))",
-          borderRadius: "50%",
-          width: 100,
-          height: 100,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: "bold",
-          fontSize: "14px",
-        },
-      },
-      {
-        id: "client",
-        data: { label: selectedCompany?.name || "Client" },
-        position: { x: 350, y: 200 },
-        style: {
-          background: "hsl(var(--secondary) / 0.2)",
-          border: "2px solid hsl(var(--secondary))",
-          borderRadius: "50%",
-          width: 120,
-          height: 120,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: "600",
-          fontSize: "13px",
-          padding: "10px",
-          textAlign: "center",
-        },
-      },
-    ];
-
-    const edges: Edge[] = [
-      {
-        id: "cssdm-client",
-        source: "cssdm",
-        target: "client",
-        type: "smoothstep",
-        animated: true,
-        style: { stroke: "hsl(var(--primary))", strokeWidth: 2 },
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          color: "hsl(var(--primary))",
-        },
-      },
-    ];
-
-    // Ajouter les fournisseurs
-    suppliers.forEach((supplier, index) => {
-      const supplierId = `supplier-${index}`;
-      const xOffset = (index - (suppliers.length - 1) / 2) * 250;
-      
-      nodes.push({
-        id: supplierId,
-        data: { 
-          label: (
-            <div className="text-center">
-              <div className="font-semibold">{supplier.name}</div>
-              <div className="text-xs mt-1 opacity-70">
-                {supplier.services.join(", ")}
-              </div>
-            </div>
-          )
-        },
-        position: { x: 400 + xOffset, y: 380 },
-        style: {
-          background: "hsl(var(--muted))",
-          border: "2px solid hsl(var(--border))",
-          borderRadius: "12px",
-          padding: "16px",
-          minWidth: 160,
-          fontWeight: "500",
-          fontSize: "12px",
-        },
-      });
-
-      edges.push({
-        id: `client-${supplierId}`,
-        source: "client",
-        target: supplierId,
-        type: "smoothstep",
-        animated: false,
-        style: { stroke: "hsl(var(--muted-foreground) / 0.3)", strokeWidth: 2 },
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          color: "hsl(var(--muted-foreground) / 0.3)",
-        },
-      });
-    });
-
-    return { nodes, edges };
-  }, [selectedCompany, suppliers]);
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
@@ -202,20 +91,53 @@ const ClientDetail = () => {
             </p>
           </div>
 
-          {/* Supplier Graph */}
+          {/* Supplier Tree SVG */}
           <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-            <CardContent className="p-0">
-              <div style={{ height: "500px", width: "100%" }}>
-                <ReactFlow
-                  nodes={nodes}
-                  edges={edges}
-                  fitView
-                  attributionPosition="bottom-left"
-                >
-                  <Background variant={BackgroundVariant.Dots} gap={16} size={1} />
-                  <Controls />
-                </ReactFlow>
-              </div>
+            <CardContent className="p-12">
+              <svg width="100%" height="600" viewBox="0 0 800 600" className="overflow-visible">
+                {/* CSSDM Node */}
+                <circle cx="400" cy="80" r="50" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2" />
+                <text x="400" y="85" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="16" fontWeight="500">
+                  CSSDM
+                </text>
+
+                {/* Line from CSSDM to Client */}
+                <line x1="400" y1="130" x2="400" y2="230" stroke="hsl(var(--border))" strokeWidth="2" />
+
+                {/* Client Node */}
+                <circle cx="400" cy="280" r="60" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2" />
+                <text x="400" y="285" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="16" fontWeight="500">
+                  {selectedCompany?.name}
+                </text>
+
+                {suppliers.length > 0 && (
+                  <>
+                    {/* Left Supplier (Veeam or first) */}
+                    <line x1="400" y1="340" x2="250" y2="480" stroke="hsl(var(--border))" strokeWidth="2" />
+                    <circle cx="250" cy="480" r="45" fill="transparent" stroke="hsl(var(--border))" strokeWidth="2" />
+                    <text x="250" y="485" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="15" fontWeight="500">
+                      {suppliers[0]?.name}
+                    </text>
+                    <text x="250" y="545" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
+                      ({suppliers[0]?.services.join(", ")})
+                    </text>
+
+                    {suppliers.length > 1 && (
+                      <>
+                        {/* Right Supplier (Red Hat or second) */}
+                        <line x1="400" y1="340" x2="550" y2="480" stroke="hsl(var(--border))" strokeWidth="2" />
+                        <circle cx="550" cy="480" r="45" fill="transparent" stroke="hsl(var(--border))" strokeWidth="2" />
+                        <text x="550" y="485" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="15" fontWeight="500">
+                          {suppliers[1]?.name}
+                        </text>
+                        <text x="550" y="545" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
+                          ({suppliers[1]?.services.join(", ")})
+                        </text>
+                      </>
+                    )}
+                  </>
+                )}
+              </svg>
             </CardContent>
           </Card>
 
