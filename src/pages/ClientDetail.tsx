@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Shield, ArrowLeft, BookOpen } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import ReactFlow, { 
+  Node, 
+  Edge, 
+  Controls, 
+  Background,
+  BackgroundVariant,
+  MarkerType
+} from "reactflow";
+import "reactflow/dist/style.css";
 
 const ClientDetail = () => {
   const { clientId } = useParams();
@@ -51,6 +60,108 @@ const ClientDetail = () => {
 
   const suppliers = supplierTree[clientId as keyof typeof supplierTree] || [];
 
+  // Créer les nœuds et edges pour le graphe
+  const { nodes, edges } = useMemo(() => {
+    const nodes: Node[] = [
+      {
+        id: "cssdm",
+        data: { label: "CSSDM" },
+        position: { x: 400, y: 50 },
+        style: {
+          background: "hsl(var(--primary) / 0.1)",
+          border: "2px solid hsl(var(--primary))",
+          borderRadius: "50%",
+          width: 100,
+          height: 100,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: "bold",
+          fontSize: "14px",
+        },
+      },
+      {
+        id: "client",
+        data: { label: selectedCompany?.name || "Client" },
+        position: { x: 350, y: 200 },
+        style: {
+          background: "hsl(var(--secondary) / 0.2)",
+          border: "2px solid hsl(var(--secondary))",
+          borderRadius: "50%",
+          width: 120,
+          height: 120,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: "600",
+          fontSize: "13px",
+          padding: "10px",
+          textAlign: "center",
+        },
+      },
+    ];
+
+    const edges: Edge[] = [
+      {
+        id: "cssdm-client",
+        source: "cssdm",
+        target: "client",
+        type: "smoothstep",
+        animated: true,
+        style: { stroke: "hsl(var(--primary))", strokeWidth: 2 },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: "hsl(var(--primary))",
+        },
+      },
+    ];
+
+    // Ajouter les fournisseurs
+    suppliers.forEach((supplier, index) => {
+      const supplierId = `supplier-${index}`;
+      const xOffset = (index - (suppliers.length - 1) / 2) * 250;
+      
+      nodes.push({
+        id: supplierId,
+        data: { 
+          label: (
+            <div className="text-center">
+              <div className="font-semibold">{supplier.name}</div>
+              <div className="text-xs mt-1 opacity-70">
+                {supplier.services.join(", ")}
+              </div>
+            </div>
+          )
+        },
+        position: { x: 400 + xOffset, y: 380 },
+        style: {
+          background: "hsl(var(--muted))",
+          border: "2px solid hsl(var(--border))",
+          borderRadius: "12px",
+          padding: "16px",
+          minWidth: 160,
+          fontWeight: "500",
+          fontSize: "12px",
+        },
+      });
+
+      edges.push({
+        id: `client-${supplierId}`,
+        source: "client",
+        target: supplierId,
+        type: "smoothstep",
+        animated: false,
+        style: { stroke: "hsl(var(--muted-foreground) / 0.3)", strokeWidth: 2 },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: "hsl(var(--muted-foreground) / 0.3)",
+        },
+      });
+    });
+
+    return { nodes, edges };
+  }, [selectedCompany, suppliers]);
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
@@ -91,64 +202,19 @@ const ClientDetail = () => {
             </p>
           </div>
 
-          {/* Supplier Tree */}
+          {/* Supplier Graph */}
           <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-            <CardContent className="p-8">
-              <div className="space-y-6">
-                {/* Root: CSSDM */}
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-lg">CSSDM</p>
-                  </div>
-                </div>
-
-                {/* Connection Line */}
-                <div className="ml-6 border-l-2 border-border/50 pl-8 space-y-6">
-                  {/* Selected Client */}
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-secondary/20 border-2 border-secondary flex items-center justify-center">
-                      <span className="text-sm font-medium">
-                        {selectedCompany?.name.charAt(0)}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="font-semibold">{selectedCompany?.name}</p>
-                    </div>
-                  </div>
-
-                  {/* Suppliers */}
-                  {suppliers.length > 0 && (
-                    <div className="ml-5 border-l-2 border-border/50 pl-8 space-y-6">
-                      {suppliers.map((supplier, index) => (
-                        <div key={index}>
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-muted border border-border flex items-center justify-center">
-                              <span className="text-xs font-medium">
-                                {supplier.name.charAt(0)}
-                              </span>
-                            </div>
-                            <div>
-                              <p className="font-medium">{supplier.name}</p>
-                              <div className="flex flex-wrap gap-2 mt-1">
-                                {supplier.services.map((service, sIndex) => (
-                                  <span
-                                    key={sIndex}
-                                    className="text-xs px-2 py-1 rounded-md bg-muted/50 text-muted-foreground"
-                                  >
-                                    {service}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+            <CardContent className="p-0">
+              <div style={{ height: "500px", width: "100%" }}>
+                <ReactFlow
+                  nodes={nodes}
+                  edges={edges}
+                  fitView
+                  attributionPosition="bottom-left"
+                >
+                  <Background variant={BackgroundVariant.Dots} gap={16} size={1} />
+                  <Controls />
+                </ReactFlow>
               </div>
             </CardContent>
           </Card>
