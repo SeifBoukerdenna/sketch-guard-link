@@ -21,37 +21,105 @@ const ClientDetail = () => {
 
   // Mock data pour l'arbre de fournisseurs
   const supplierTree = {
-    micrologic: [
-      {
-        name: "Veeam",
-        services: ["Cirrus BaaS", "Cloud Connect"],
-      },
-      {
-        name: "Red Hat",
-        services: ["Cirrus PaaS", "OpenShift"],
-      },
-    ],
-    zens: [
-      {
-        name: "Microsoft Azure",
-        services: ["Cloud Services", "Active Directory"],
-      },
-    ],
-    inso: [
-      {
-        name: "AWS",
-        services: ["EC2", "S3 Storage"],
-      },
-    ],
-    coginov: [
-      {
-        name: "Google Cloud",
-        services: ["Compute Engine", "Cloud Storage"],
-      },
-    ],
+    micrologic: {
+      suppliers: [
+        {
+          name: "Veeam",
+          services: ["Cirrus BaaS", "Cloud Connect"],
+          hasAlert: false,
+          subSuppliers: [
+            { name: "Azure Storage", services: ["Backup Storage"] },
+          ]
+        },
+        {
+          name: "Red Hat",
+          services: ["Cirrus PaaS", "OpenShift"],
+          hasAlert: true,
+          subSuppliers: [
+            { name: "IBM Cloud", services: ["Infrastructure"] },
+          ]
+        },
+        {
+          name: "VMware",
+          services: ["vSphere", "ESXi"],
+          hasAlert: false,
+          subSuppliers: []
+        },
+      ]
+    },
+    zens: {
+      suppliers: [
+        {
+          name: "Microsoft Azure",
+          services: ["Cloud Services", "Active Directory"],
+          hasAlert: false,
+          subSuppliers: [
+            { name: "Microsoft 365", services: ["Email", "Teams"] },
+            { name: "Azure AD", services: ["Identity"] },
+          ]
+        },
+        {
+          name: "Cisco",
+          services: ["Network Security", "Firewall"],
+          hasAlert: false,
+          subSuppliers: []
+        },
+      ]
+    },
+    inso: {
+      suppliers: [
+        {
+          name: "AWS",
+          services: ["EC2", "S3 Storage"],
+          hasAlert: false,
+          subSuppliers: [
+            { name: "CloudFront", services: ["CDN"] },
+            { name: "RDS", services: ["Database"] },
+          ]
+        },
+        {
+          name: "MongoDB Atlas",
+          services: ["Database", "Analytics"],
+          hasAlert: true,
+          subSuppliers: []
+        },
+        {
+          name: "Datadog",
+          services: ["Monitoring", "Logs"],
+          hasAlert: false,
+          subSuppliers: []
+        },
+      ]
+    },
+    coginov: {
+      suppliers: [
+        {
+          name: "Google Cloud",
+          services: ["Compute Engine", "Cloud Storage"],
+          hasAlert: false,
+          subSuppliers: [
+            { name: "BigQuery", services: ["Analytics"] },
+            { name: "Cloud Functions", services: ["Serverless"] },
+          ]
+        },
+        {
+          name: "Salesforce",
+          services: ["CRM", "Marketing Cloud"],
+          hasAlert: false,
+          subSuppliers: []
+        },
+        {
+          name: "Auth0",
+          services: ["Authentication", "Identity"],
+          hasAlert: true,
+          subSuppliers: []
+        },
+      ]
+    },
   };
 
-  const suppliers = supplierTree[clientId as keyof typeof supplierTree] || [];
+  const clientData = supplierTree[clientId as keyof typeof supplierTree];
+  const suppliers = clientData?.suppliers || [];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -108,77 +176,130 @@ const ClientDetail = () => {
             {/* Supplier Tree SVG */}
             <Card className="bg-card/50 backdrop-blur-sm border-border/50 md:col-span-2">
               <CardContent className="p-12 relative">
-                {showAlert && (
-                  <div className="absolute top-4 right-4">
+                {showAlert && suppliers.some(s => s.hasAlert) && (
+                  <div className="absolute top-4 right-4 animate-fade-in">
                     <Badge variant="destructive" className="text-sm">
                       Vulnérabilité détectée
                     </Badge>
                   </div>
                 )}
-                <svg width="100%" height="600" viewBox="0 0 800 600" className="overflow-visible">
+                <svg width="100%" height="700" viewBox="0 0 900 700" className="overflow-visible">
                   {/* CSSDM Node */}
-                  <circle cx="400" cy="80" r="50" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2" />
-                  <text x="400" y="85" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="16" fontWeight="500">
+                  <circle cx="450" cy="60" r="45" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2" />
+                  <text x="450" y="65" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="16" fontWeight="600">
                     CSSDM
                   </text>
 
                   {/* Line from CSSDM to Client */}
-                  <line x1="400" y1="130" x2="400" y2="230" stroke="hsl(var(--primary))" strokeWidth="2" />
+                  <line x1="450" y1="105" x2="450" y2="180" stroke="hsl(var(--primary))" strokeWidth="2" />
 
                   {/* Client Node */}
-                  <circle cx="400" cy="280" r="60" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2" />
-                  <text x="400" y="285" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="16" fontWeight="500">
+                  <circle cx="450" cy="230" r="55" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="2.5" />
+                  <text x="450" y="235" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="17" fontWeight="600">
                     {selectedCompany?.name}
                   </text>
 
-                  {suppliers.length > 0 && (
-                    <>
-                      {/* Left Supplier (Veeam or first) */}
-                      <line x1="400" y1="340" x2="250" y2="480" stroke="hsl(var(--border))" strokeWidth="2" />
-                      <circle cx="250" cy="480" r="45" fill="transparent" stroke="hsl(var(--border))" strokeWidth="2" />
-                      <text x="250" y="485" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="15" fontWeight="500">
-                        {suppliers[0]?.name}
-                      </text>
-                      <text x="250" y="545" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
-                        ({suppliers[0]?.services.join(", ")})
-                      </text>
+                  {/* Suppliers */}
+                  {suppliers.map((supplier, index) => {
+                    const totalSuppliers = suppliers.length;
+                    const spacing = 240;
+                    const startX = 450 - ((totalSuppliers - 1) * spacing) / 2;
+                    const supplierX = startX + index * spacing;
+                    const supplierY = 420;
+                    const isAlert = showAlert && supplier.hasAlert;
+                    
+                    return (
+                      <g key={supplier.name}>
+                        {/* Line from Client to Supplier */}
+                        <line 
+                          x1="450" 
+                          y1="285" 
+                          x2={supplierX} 
+                          y2={supplierY - 50} 
+                          stroke={isAlert ? "hsl(var(--destructive))" : "hsl(var(--border))"} 
+                          strokeWidth={isAlert ? "2.5" : "2"}
+                          className={isAlert ? "animate-pulse" : ""}
+                        />
+                        
+                        {/* Supplier Node */}
+                        <circle 
+                          cx={supplierX} 
+                          cy={supplierY} 
+                          r="48" 
+                          fill={isAlert ? "hsl(var(--destructive) / 0.1)" : "transparent"} 
+                          stroke={isAlert ? "hsl(var(--destructive))" : "hsl(var(--border))"} 
+                          strokeWidth={isAlert ? "2.5" : "2"}
+                          className={isAlert ? "animate-pulse" : ""}
+                        />
+                        <text 
+                          x={supplierX} 
+                          y={supplierY + 5} 
+                          textAnchor="middle" 
+                          fill={isAlert ? "hsl(var(--destructive))" : "hsl(var(--foreground))"} 
+                          fontSize="15" 
+                          fontWeight="600"
+                        >
+                          {supplier.name}
+                        </text>
+                        
+                        {/* Services text */}
+                        <text x={supplierX} y={supplierY + 70} textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="11">
+                          {supplier.services[0]}
+                        </text>
+                        {supplier.services[1] && (
+                          <text x={supplierX} y={supplierY + 85} textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="11">
+                            {supplier.services[1]}
+                          </text>
+                        )}
 
-                      {suppliers.length > 1 && (
-                        <>
-                          {/* Right Supplier (Red Hat or second) - Red when alert active */}
-                          <line 
-                            x1="400" 
-                            y1="340" 
-                            x2="550" 
-                            y2="480" 
-                            stroke={showAlert ? "hsl(var(--destructive))" : "hsl(var(--border))"} 
-                            strokeWidth="2" 
-                          />
-                          <circle 
-                            cx="550" 
-                            cy="480" 
-                            r="45" 
-                            fill="transparent" 
-                            stroke={showAlert ? "hsl(var(--destructive))" : "hsl(var(--border))"} 
-                            strokeWidth="2" 
-                          />
-                          <text 
-                            x="550" 
-                            y="485" 
-                            textAnchor="middle" 
-                            fill={showAlert ? "hsl(var(--destructive))" : "hsl(var(--foreground))"} 
-                            fontSize="15" 
-                            fontWeight="500"
-                          >
-                            {suppliers[1]?.name}
-                          </text>
-                          <text x="550" y="545" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
-                            ({suppliers[1]?.services.join(", ")})
-                          </text>
-                        </>
-                      )}
-                    </>
-                  )}
+                        {/* Sub-suppliers */}
+                        {supplier.subSuppliers.map((subSupplier, subIndex) => {
+                          const subSpacing = 100;
+                          const subsCount = supplier.subSuppliers.length;
+                          const subStartX = supplierX - ((subsCount - 1) * subSpacing) / 2;
+                          const subX = subStartX + subIndex * subSpacing;
+                          const subY = 600;
+                          
+                          return (
+                            <g key={subSupplier.name}>
+                              {/* Line to sub-supplier */}
+                              <line 
+                                x1={supplierX} 
+                                y1={supplierY + 48} 
+                                x2={subX} 
+                                y2={subY - 30} 
+                                stroke="hsl(var(--border) / 0.5)" 
+                                strokeWidth="1.5"
+                                strokeDasharray="4,4"
+                              />
+                              
+                              {/* Sub-supplier Node */}
+                              <circle 
+                                cx={subX} 
+                                cy={subY} 
+                                r="30" 
+                                fill="transparent" 
+                                stroke="hsl(var(--border) / 0.6)" 
+                                strokeWidth="1.5"
+                              />
+                              <text 
+                                x={subX} 
+                                y={subY + 4} 
+                                textAnchor="middle" 
+                                fill="hsl(var(--muted-foreground))" 
+                                fontSize="11" 
+                                fontWeight="500"
+                              >
+                                {subSupplier.name.length > 12 
+                                  ? subSupplier.name.substring(0, 12) + '...' 
+                                  : subSupplier.name}
+                              </text>
+                            </g>
+                          );
+                        })}
+                      </g>
+                    );
+                  })}
                 </svg>
               </CardContent>
             </Card>
@@ -202,14 +323,19 @@ const ClientDetail = () => {
                 {showAlert ? (
                   <div className="space-y-6">
                     <div className="space-y-3">
-                      <Badge variant="destructive" className="mb-3">
+                      <Badge variant="destructive" className="mb-3 animate-pulse">
                         Critique
                       </Badge>
                       <h4 className="font-bold text-destructive">
                         Vulnérabilité détectée
                       </h4>
                       <p className="text-sm text-muted-foreground">
-                        Une vulnérabilité critique a été identifiée chez le fournisseur Red Hat affectant les services Cirrus PaaS et OpenShift.
+                        Une vulnérabilité critique a été identifiée chez le fournisseur{' '}
+                        <span className="font-semibold text-destructive">
+                          {suppliers.find(s => s.hasAlert)?.name}
+                        </span>
+                        {' '}affectant les services{' '}
+                        {suppliers.find(s => s.hasAlert)?.services.join(' et ')}.
                       </p>
                     </div>
 
