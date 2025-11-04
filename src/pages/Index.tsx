@@ -1,8 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Draggable from "react-draggable";
 import { InteractiveNetworkGraph } from "@/components/InteractiveNetworkGraph";
 import { AlertModal } from "@/components/AlertModal";
-import { Shield, FolderOpen, CheckCircle2, AlertTriangle, GripVertical, Settings, Eye, EyeOff } from "lucide-react";
+import { AITranslationPanel } from "@/components/AITranslationPanel";
+import { AttackSimulation } from "@/components/AttackSimulation";
+import { CollectiveDefensePanel } from "@/components/CollectiveDefensePanel";
+import { IncidentTimeline } from "@/components/IncidentTimeline";
+import { RecommendationsPanel } from "@/components/RecommendationsPanel";
+import { BlockchainProofPanel } from "@/components/BlockchainProofPanel";
+import { DashboardPanel } from "@/components/DashboardPanel";
+import { Shield, FolderOpen, CheckCircle2, AlertTriangle, GripVertical, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +29,13 @@ const Index = () => {
   const [widgetVisibility, setWidgetVisibility] = useState({
     status: true,
     alert: true,
+    ai: true,
+    attack: false,
+    collective: true,
+    timeline: true,
+    recommendations: true,
+    blockchain: false,
+    dashboard: true
   });
   
   // Load saved positions from localStorage
@@ -29,7 +43,14 @@ const Index = () => {
     const saved = localStorage.getItem('widget-positions');
     return saved ? JSON.parse(saved) : {
       status: { x: 20, y: 80 },
-      alert: { x: 20, y: 400 }
+      alert: { x: 20, y: 400 },
+      ai: { x: 420, y: 80 },
+      attack: { x: 820, y: 80 },
+      collective: { x: 420, y: 460 },
+      timeline: { x: 820, y: 460 },
+      recommendations: { x: 1220, y: 80 },
+      blockchain: { x: 1220, y: 460 },
+      dashboard: { x: 20, y: 80 }
     };
   });
 
@@ -43,14 +64,21 @@ const Index = () => {
     localStorage.setItem('widget-positions', JSON.stringify(newPositions));
   };
 
-  const toggleWidget = (widget: 'status' | 'alert') => {
+  const toggleWidget = (widget: keyof typeof widgetVisibility) => {
     setWidgetVisibility(prev => ({ ...prev, [widget]: !prev[widget] }));
   };
 
   const resetPositions = () => {
     const defaultPositions = {
       status: { x: 20, y: 80 },
-      alert: { x: 20, y: 400 }
+      alert: { x: 20, y: 400 },
+      ai: { x: 420, y: 80 },
+      attack: { x: 820, y: 80 },
+      collective: { x: 420, y: 460 },
+      timeline: { x: 820, y: 460 },
+      recommendations: { x: 1220, y: 80 },
+      blockchain: { x: 1220, y: 460 },
+      dashboard: { x: 20, y: 80 }
     };
     setPositions(defaultPositions);
     localStorage.setItem('widget-positions', JSON.stringify(defaultPositions));
@@ -100,10 +128,52 @@ const Index = () => {
                   <DropdownMenuLabel>Widgets visibles</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuCheckboxItem
+                    checked={widgetVisibility.dashboard}
+                    onCheckedChange={() => toggleWidget('dashboard')}
+                  >
+                    Dashboard Multi-Rôle
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
                     checked={widgetVisibility.status}
                     onCheckedChange={() => toggleWidget('status')}
                   >
-                    Statut système
+                    Statut Système
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={widgetVisibility.ai}
+                    onCheckedChange={() => toggleWidget('ai')}
+                  >
+                    Traduction IA
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={widgetVisibility.attack}
+                    onCheckedChange={() => toggleWidget('attack')}
+                  >
+                    Simulation Attaque
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={widgetVisibility.recommendations}
+                    onCheckedChange={() => toggleWidget('recommendations')}
+                  >
+                    Recommandations
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={widgetVisibility.timeline}
+                    onCheckedChange={() => toggleWidget('timeline')}
+                  >
+                    Timeline Incidents
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={widgetVisibility.collective}
+                    onCheckedChange={() => toggleWidget('collective')}
+                  >
+                    Collective Defense
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={widgetVisibility.blockchain}
+                    onCheckedChange={() => toggleWidget('blockchain')}
+                  >
+                    Preuves Blockchain
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
                     checked={widgetVisibility.alert}
@@ -128,7 +198,23 @@ const Index = () => {
 
       {/* Floating Widgets */}
       <div className="absolute inset-0 z-30 pointer-events-none">
-        <div className="container mx-auto h-full p-4">
+        <div className="w-full h-full p-4">
+          {/* Dashboard Multi-Role */}
+          {widgetVisibility.dashboard && (
+            <Draggable
+              position={positions.dashboard}
+              onStop={(e, data) => handleDragStop('dashboard', data)}
+              handle=".drag-handle"
+              bounds="parent"
+            >
+              <div className="absolute pointer-events-auto w-96">
+                <div className="drag-handle cursor-grab active:cursor-grabbing">
+                  <DashboardPanel />
+                </div>
+              </div>
+            </Draggable>
+          )}
+
           {/* Status Widget - Draggable */}
           {widgetVisibility.status && (
             <Draggable
@@ -214,6 +300,102 @@ const Index = () => {
                     </Button>
                   </CardContent>
                 </Card>
+              </div>
+            </Draggable>
+          )}
+
+          {/* AI Translation Panel */}
+          {widgetVisibility.ai && (
+            <Draggable
+              position={positions.ai}
+              onStop={(e, data) => handleDragStop('ai', data)}
+              handle=".drag-handle"
+              bounds="parent"
+            >
+              <div className="absolute pointer-events-auto w-96">
+                <div className="drag-handle cursor-grab active:cursor-grabbing">
+                  <AITranslationPanel />
+                </div>
+              </div>
+            </Draggable>
+          )}
+
+          {/* Attack Simulation */}
+          {widgetVisibility.attack && (
+            <Draggable
+              position={positions.attack}
+              onStop={(e, data) => handleDragStop('attack', data)}
+              handle=".drag-handle"
+              bounds="parent"
+            >
+              <div className="absolute pointer-events-auto w-96">
+                <div className="drag-handle cursor-grab active:cursor-grabbing">
+                  <AttackSimulation />
+                </div>
+              </div>
+            </Draggable>
+          )}
+
+          {/* Recommendations Panel */}
+          {widgetVisibility.recommendations && (
+            <Draggable
+              position={positions.recommendations}
+              onStop={(e, data) => handleDragStop('recommendations', data)}
+              handle=".drag-handle"
+              bounds="parent"
+            >
+              <div className="absolute pointer-events-auto w-96">
+                <div className="drag-handle cursor-grab active:cursor-grabbing">
+                  <RecommendationsPanel />
+                </div>
+              </div>
+            </Draggable>
+          )}
+
+          {/* Collective Defense */}
+          {widgetVisibility.collective && (
+            <Draggable
+              position={positions.collective}
+              onStop={(e, data) => handleDragStop('collective', data)}
+              handle=".drag-handle"
+              bounds="parent"
+            >
+              <div className="absolute pointer-events-auto w-96">
+                <div className="drag-handle cursor-grab active:cursor-grabbing">
+                  <CollectiveDefensePanel />
+                </div>
+              </div>
+            </Draggable>
+          )}
+
+          {/* Incident Timeline */}
+          {widgetVisibility.timeline && (
+            <Draggable
+              position={positions.timeline}
+              onStop={(e, data) => handleDragStop('timeline', data)}
+              handle=".drag-handle"
+              bounds="parent"
+            >
+              <div className="absolute pointer-events-auto w-96">
+                <div className="drag-handle cursor-grab active:cursor-grabbing">
+                  <IncidentTimeline />
+                </div>
+              </div>
+            </Draggable>
+          )}
+
+          {/* Blockchain Proof */}
+          {widgetVisibility.blockchain && (
+            <Draggable
+              position={positions.blockchain}
+              onStop={(e, data) => handleDragStop('blockchain', data)}
+              handle=".drag-handle"
+              bounds="parent"
+            >
+              <div className="absolute pointer-events-auto w-96">
+                <div className="drag-handle cursor-grab active:cursor-grabbing">
+                  <BlockchainProofPanel />
+                </div>
               </div>
             </Draggable>
           )}

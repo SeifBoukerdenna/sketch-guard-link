@@ -35,6 +35,12 @@ All colors MUST be HSL.
     --success: 174 100% 23%;
     --success-foreground: 0 0% 100%;
 
+    --warning: 45 93% 58%;
+    --warning-foreground: 0 0% 10%;
+
+    --info: 220 90% 56%;
+    --info-foreground: 0 0% 100%;
+
     --border: 0 0% 90%;
     --input: 0 0% 90%;
     --ring: 180 100% 23%;
@@ -78,6 +84,44 @@ All colors MUST be HSL.
 
   .border-glow-alert {
     box-shadow: 0 0 20px -5px hsl(var(--destructive) / 0.5);
+  }
+
+  .border-glow-warning {
+    box-shadow: 0 0 20px -5px hsl(var(--warning) / 0.4);
+  }
+
+  .border-glow-info {
+    box-shadow: 0 0 20px -5px hsl(var(--info) / 0.4);
+  }
+
+  .animate-attack-pulse {
+    animation: attack-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes attack-pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+  }
+
+  @keyframes slide-in {
+    from {
+      transform: translateX(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
   }
 }
 
