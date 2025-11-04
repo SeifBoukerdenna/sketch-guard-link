@@ -34,10 +34,10 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 container mx-auto px-8 py-12">
-        <div className="flex items-start gap-8 max-w-5xl">
+      <main className="flex-1 flex items-center justify-center px-8">
+        <div className="flex items-center gap-12 w-full max-w-6xl">
           {/* Left sidebar - Company dropdown */}
-          <div className="w-64 flex-shrink-0">
+          <div className="w-72 flex-shrink-0">
             <Select value={selectedCompany} onValueChange={setSelectedCompany}>
               <SelectTrigger className="w-full bg-primary text-primary-foreground border-none hover:bg-primary/80 transition-all h-auto py-4 px-5 shadow-lg shadow-primary/20 rounded-xl font-medium">
                 <SelectValue />
@@ -57,7 +57,7 @@ const Index = () => {
           </div>
 
           {/* Status Card */}
-          <div className="flex-1">
+          <div className="flex-1 max-w-2xl">
             <Card className="bg-card/50 backdrop-blur-sm border border-success/20 shadow-xl shadow-success/5 rounded-2xl overflow-hidden">
               <CardContent className="p-10 space-y-7">
                 {/* Status Items */}
