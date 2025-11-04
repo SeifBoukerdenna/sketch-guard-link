@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Shield, ArrowLeft, BookOpen, AlertTriangle } from "lucide-react";
+import { Shield, ArrowLeft, BookOpen, AlertTriangle, FolderOpen } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -142,6 +142,14 @@ const ClientDetail = () => {
           </div>
 
           <div className="flex gap-3">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate(`/client/${clientId}/scans`)}
+            >
+              <FolderOpen className="w-4 h-4 mr-2" />
+              Dossiers
+            </Button>
             <Button 
               variant={showAlert ? "destructive" : "outline"} 
               size="sm"
