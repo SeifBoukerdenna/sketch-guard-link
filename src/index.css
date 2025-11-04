@@ -4,23 +4,24 @@
 
 @layer base {
   :root {
-    /* Backgrounds */
-    --background: 218 14% 18%;
+    /* Backgrounds - #2B2B34 */
+    --background: 245 7% 18%;
     --foreground: 0 0% 100%;
 
     /* Cards & Containers */
-    --card: 248 19% 32%;
+    --card: 245 9% 22%;
     --card-foreground: 0 0% 100%;
 
-    /* Primary Brand Color - Dropdown purple */
+    /* Primary Brand Color - Dropdown #5749AD */
     --primary: 248 43% 48%;
     --primary-foreground: 0 0% 100%;
 
-    /* Status Colors */
-    --success: 180 86% 24%;
+    /* Status Colors - Green #00766F */
+    --success: 177 100% 23%;
     --success-foreground: 0 0% 100%;
 
-    --destructive: 356 82% 49%;
+    /* Red #D92026 */
+    --destructive: 357 77% 49%;
     --destructive-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
@@ -30,13 +31,13 @@
     --info-foreground: 0 0% 100%;
 
     /* UI Elements */
-    --muted: 240 7% 25%;
-    --muted-foreground: 0 0% 65%;
+    --muted: 245 7% 25%;
+    --muted-foreground: 0 0% 70%;
 
-    --border: 240 7% 30%;
-    --input: 240 7% 30%;
+    --border: 245 7% 28%;
+    --input: 245 7% 28%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
   }
 }
 
