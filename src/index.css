@@ -5,22 +5,22 @@
 @layer base {
   :root {
     /* Backgrounds */
-    --background: 240 7% 18%;
+    --background: 218 14% 18%;
     --foreground: 0 0% 100%;
 
     /* Cards & Containers */
     --card: 248 19% 32%;
     --card-foreground: 0 0% 100%;
 
-    /* Primary Brand Color */
+    /* Primary Brand Color - Dropdown purple */
     --primary: 248 43% 48%;
     --primary-foreground: 0 0% 100%;
 
     /* Status Colors */
-    --success: 120 9% 43%;
+    --success: 180 86% 24%;
     --success-foreground: 0 0% 100%;
 
-    --destructive: 0 73% 50%;
+    --destructive: 356 82% 49%;
     --destructive-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
