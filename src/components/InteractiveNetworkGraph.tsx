@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState, useCallback } from "react";
 import ReactFlow, {
   Node,
   Edge,
@@ -6,9 +6,14 @@ import ReactFlow, {
   Controls,
   MiniMap,
   BackgroundVariant,
+  useNodesState,
+  useEdgesState,
+  Connection,
+  addEdge,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { CustomNode } from "./CustomNode";
+import { NodeEditPanel } from "./NodeEditPanel";
 
 interface Partner {
   id: string;
@@ -21,6 +26,8 @@ interface Partner {
 
 interface InteractiveNetworkGraphProps {
   selectedPartner?: string;
+  onNodesChange?: (nodes: Node<Partner>[]) => void;
+  onEdgesChange?: (edges: Edge[]) => void;
 }
 
 // Network configurations for different partners
@@ -87,36 +94,81 @@ const nodeTypes = {
   custom: CustomNode,
 };
 
-const InteractiveNetworkGraph = memo(({ selectedPartner = "Micrologic" }: InteractiveNetworkGraphProps) => {
+const InteractiveNetworkGraph = memo(({ selectedPartner = "Micrologic", onNodesChange, onEdgesChange }: InteractiveNetworkGraphProps) => {
   const config = networkConfigs[selectedPartner] || networkConfigs["default"];
-  const nodes = createNodes(config.partners);
-  const edges = config.edges;
+  const initialNodes = createNodes(config.partners);
+  const initialEdges = config.edges;
+
+  const [nodes, setNodes, onNodesChangeInternal] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChangeInternal] = useEdgesState(initialEdges);
+  const [selectedNode, setSelectedNode] = useState<Node<Partner> | null>(null);
+
+  const onConnect = useCallback(
+    (params: Connection) => {
+      const newEdges = addEdge({ ...params, animated: true, style: { stroke: "#00766F", strokeWidth: 2 } }, edges);
+      setEdges(newEdges);
+      onEdgesChange?.(newEdges);
+    },
+    [edges, setEdges, onEdgesChange]
+  );
+
+  const onNodeClick = useCallback((_event: React.MouseEvent, node: Node<Partner>) => {
+    setSelectedNode(node);
+  }, []);
+
+  const handleNodeUpdate = useCallback((updatedNode: Node<Partner>) => {
+    setNodes((nds) => {
+      const newNodes = nds.map((n) => (n.id === updatedNode.id ? updatedNode : n));
+      onNodesChange?.(newNodes);
+      return newNodes;
+    });
+    setSelectedNode(null);
+  }, [setNodes, onNodesChange]);
+
+  const handleNodesChange = useCallback((changes: any) => {
+    onNodesChangeInternal(changes);
+    onNodesChange?.(nodes);
+  }, [onNodesChangeInternal, onNodesChange, nodes]);
 
   return (
-    <div className="h-[500px] border border-border rounded-lg overflow-hidden bg-background">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        fitView
-        nodesDraggable={false}
-        nodesConnectable={false}
-        elementsSelectable={false}
-        zoomOnScroll={true}
-        panOnScroll={false}
-        className="bg-background"
-      >
-        <Background className="bg-background" variant={BackgroundVariant.Dots} />
-        <Controls className="bg-card border-border" showInteractive={false} />
-        <MiniMap 
-          className="bg-card border-border" 
-          nodeColor={(node) => {
-            const status = (node.data as Partner).status;
-            return status === "alert" ? "#D92026" : "#00766F";
-          }} 
+    <>
+      <div className="h-[500px] border border-border rounded-lg overflow-hidden bg-background">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          onNodesChange={handleNodesChange}
+          onEdgesChange={onEdgesChangeInternal}
+          onConnect={onConnect}
+          onNodeClick={onNodeClick}
+          fitView
+          nodesDraggable={true}
+          nodesConnectable={true}
+          elementsSelectable={true}
+          zoomOnScroll={true}
+          panOnScroll={false}
+          className="bg-background"
+        >
+          <Background className="bg-background" variant={BackgroundVariant.Dots} />
+          <Controls className="bg-card border-border" />
+          <MiniMap 
+            className="bg-card border-border" 
+            nodeColor={(node) => {
+              const status = (node.data as Partner).status;
+              return status === "alert" ? "#D92026" : "#00766F";
+            }} 
+          />
+        </ReactFlow>
+      </div>
+      
+      {selectedNode && (
+        <NodeEditPanel
+          node={selectedNode}
+          onClose={() => setSelectedNode(null)}
+          onSave={handleNodeUpdate}
         />
-      </ReactFlow>
-    </div>
+      )}
+    </>
   );
 });
 
