@@ -80,7 +80,7 @@ const ClientDetail = () => {
 
       {/* Main Content */}
       <main className="flex-1 px-8 py-12">
-        <div className="container mx-auto max-w-6xl space-y-8">
+        <div className="container mx-auto max-w-7xl space-y-8">
           {/* Client Name */}
           <div>
             <h2 className="text-3xl font-bold text-foreground">
@@ -92,9 +92,9 @@ const ClientDetail = () => {
           </div>
 
           {/* Grid layout for Tree and Scan Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Supplier Tree SVG */}
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50 lg:col-span-2">
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50 md:col-span-2">
               <CardContent className="p-12">
                 <svg width="100%" height="600" viewBox="0 0 800 600" className="overflow-visible">
                   {/* CSSDM Node */}
@@ -144,7 +144,7 @@ const ClientDetail = () => {
             </Card>
 
             {/* Scan Quotidien Section */}
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50 lg:col-span-1">
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50 md:col-span-1">
               <CardContent className="p-8">
                 <div className="flex items-center gap-3 mb-6">
                   <BookOpen className="w-5 h-5 text-primary" />
