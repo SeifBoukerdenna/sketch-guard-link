@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ScanReportDetail } from "@/components/ScanReportDetail";
 
 interface ScanReport {
   id: string;
@@ -124,7 +125,7 @@ const monthlyScans: ScanReport[] = [
   },
 ];
 
-const ScanReportCard = ({ report }: { report: ScanReport }) => {
+const ScanReportCard = ({ report, onViewDetails }: { report: ScanReport; onViewDetails: (report: ScanReport) => void }) => {
   const getStatusColor = () => {
     switch (report.status) {
       case "success":
@@ -189,7 +190,7 @@ const ScanReportCard = ({ report }: { report: ScanReport }) => {
       </div>
 
       <div className="flex gap-2">
-        <Button variant="outline" size="sm" className="flex-1">
+        <Button variant="outline" size="sm" className="flex-1" onClick={() => onViewDetails(report)}>
           <FileText className="w-3 h-3 mr-1" />
           Voir rapport
         </Button>
@@ -206,6 +207,7 @@ const ScanHistory = () => {
   const [openDaily, setOpenDaily] = useState(true);
   const [openWeekly, setOpenWeekly] = useState(false);
   const [openMonthly, setOpenMonthly] = useState(false);
+  const [selectedReport, setSelectedReport] = useState<ScanReport | null>(null);
 
   return (
     <div className="min-h-screen bg-background">
@@ -252,7 +254,7 @@ const ScanHistory = () => {
               <CollapsibleContent>
                 <div className="p-6 pt-0 space-y-4">
                   {dailyScans.map((scan) => (
-                    <ScanReportCard key={scan.id} report={scan} />
+                    <ScanReportCard key={scan.id} report={scan} onViewDetails={setSelectedReport} />
                   ))}
                 </div>
               </CollapsibleContent>
@@ -279,7 +281,7 @@ const ScanHistory = () => {
               <CollapsibleContent>
                 <div className="p-6 pt-0 space-y-4">
                   {weeklyScans.map((scan) => (
-                    <ScanReportCard key={scan.id} report={scan} />
+                    <ScanReportCard key={scan.id} report={scan} onViewDetails={setSelectedReport} />
                   ))}
                 </div>
               </CollapsibleContent>
@@ -306,7 +308,7 @@ const ScanHistory = () => {
               <CollapsibleContent>
                 <div className="p-6 pt-0 space-y-4">
                   {monthlyScans.map((scan) => (
-                    <ScanReportCard key={scan.id} report={scan} />
+                    <ScanReportCard key={scan.id} report={scan} onViewDetails={setSelectedReport} />
                   ))}
                 </div>
               </CollapsibleContent>
@@ -314,6 +316,13 @@ const ScanHistory = () => {
           </Collapsible>
         </div>
       </main>
+
+      {selectedReport && (
+        <ScanReportDetail
+          report={selectedReport}
+          onClose={() => setSelectedReport(null)}
+        />
+      )}
     </div>
   );
 };

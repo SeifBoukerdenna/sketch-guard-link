@@ -12,8 +12,11 @@ import ReactFlow, {
   addEdge,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { CustomNode } from "./CustomNode";
 import { NodeEditPanel } from "./NodeEditPanel";
+import { AddNodePanel } from "./AddNodePanel";
 
 interface Partner {
   id: string;
@@ -102,6 +105,7 @@ const InteractiveNetworkGraph = memo(({ selectedPartner = "Micrologic", onNodesC
   const [nodes, setNodes, onNodesChangeInternal] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChangeInternal] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState<Node<Partner> | null>(null);
+  const [showAddPanel, setShowAddPanel] = useState(false);
 
   const onConnect = useCallback(
     (params: Connection) => {
@@ -130,9 +134,31 @@ const InteractiveNetworkGraph = memo(({ selectedPartner = "Micrologic", onNodesC
     onNodesChange?.(nodes);
   }, [onNodesChangeInternal, onNodesChange, nodes]);
 
+  const handleAddNode = useCallback((partner: Partner) => {
+    const newNode: Node<Partner> = {
+      id: partner.id,
+      type: "custom",
+      position: { x: 400, y: 300 },
+      data: { ...partner, isCentral: false } as any,
+    };
+    setNodes((nds) => {
+      const newNodes = [...nds, newNode];
+      onNodesChange?.(newNodes);
+      return newNodes;
+    });
+    setShowAddPanel(false);
+  }, [setNodes, onNodesChange]);
+
   return (
     <>
-      <div className="h-[500px] border border-border rounded-lg overflow-hidden bg-background">
+      <div className="space-y-3">
+        <div className="flex justify-end">
+          <Button onClick={() => setShowAddPanel(true)} size="sm">
+            <Plus className="w-4 h-4 mr-2" />
+            Ajouter un nœud
+          </Button>
+        </div>
+        <div className="h-[500px] border border-border rounded-lg overflow-hidden bg-background">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -159,6 +185,7 @@ const InteractiveNetworkGraph = memo(({ selectedPartner = "Micrologic", onNodesC
             }} 
           />
         </ReactFlow>
+        </div>
       </div>
       
       {selectedNode && (
@@ -166,6 +193,13 @@ const InteractiveNetworkGraph = memo(({ selectedPartner = "Micrologic", onNodesC
           node={selectedNode}
           onClose={() => setSelectedNode(null)}
           onSave={handleNodeUpdate}
+        />
+      )}
+
+      {showAddPanel && (
+        <AddNodePanel
+          onClose={() => setShowAddPanel(false)}
+          onAdd={handleAddNode}
         />
       )}
     </>
