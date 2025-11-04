@@ -28,8 +28,8 @@ const Index = () => {
   const [positions, setPositions] = useState(() => {
     const saved = localStorage.getItem('widget-positions');
     return saved ? JSON.parse(saved) : {
-      status: { x: 0, y: 0 },
-      alert: { x: 0, y: 0 }
+      status: { x: 20, y: 80 },
+      alert: { x: 20, y: 400 }
     };
   });
 
@@ -49,8 +49,8 @@ const Index = () => {
 
   const resetPositions = () => {
     const defaultPositions = {
-      status: { x: 0, y: 0 },
-      alert: { x: 0, y: 0 }
+      status: { x: 20, y: 80 },
+      alert: { x: 20, y: 400 }
     };
     setPositions(defaultPositions);
     localStorage.setItem('widget-positions', JSON.stringify(defaultPositions));
@@ -138,10 +138,10 @@ const Index = () => {
               bounds="parent"
             >
               <div className="absolute pointer-events-auto w-80">
-                <Card className="bg-background/95 backdrop-blur-md shadow-lg">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <GripVertical className="w-4 h-4 text-muted-foreground drag-handle cursor-grab active:cursor-grabbing" />
+                <Card className="bg-background/95 backdrop-blur-md shadow-lg border-2">
+                  <CardHeader className="pb-3 bg-muted/50 drag-handle cursor-grab active:cursor-grabbing">
+                    <CardTitle className="flex items-center gap-2 text-sm font-medium">
+                      <GripVertical className="w-4 h-4 text-muted-foreground" />
                       {showAlert ? (
                         <>
                           <AlertTriangle className="w-4 h-4 text-destructive" />
@@ -155,28 +155,51 @@ const Index = () => {
                       )}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3">
+                  <CardContent className="space-y-3 pt-4">
+                    {/* Key Metrics */}
+                    <div className="grid grid-cols-3 gap-2 pb-3 border-b border-border">
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-success">98</div>
+                        <div className="text-[10px] text-muted-foreground">Score sécu</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-lg font-bold">{partners.length}</div>
+                        <div className="text-[10px] text-muted-foreground">Partenaires</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-success">0</div>
+                        <div className="text-[10px] text-muted-foreground">Vulnérabilités</div>
+                      </div>
+                    </div>
+
                     {/* Partners List */}
-                    <div className="space-y-1">
-                      {partners.map((partner) => (
-                        <div
-                          key={partner.name}
-                          className="text-xs px-2 py-1 rounded hover:bg-muted transition-colors cursor-pointer"
-                        >
-                          {partner.name}
-                        </div>
-                      ))}
+                    <div>
+                      <div className="text-[10px] font-semibold text-muted-foreground mb-1 uppercase tracking-wide">Partenaires actifs</div>
+                      <div className="space-y-0.5">
+                        {partners.map((partner) => (
+                          <div
+                            key={partner.name}
+                            className="text-xs px-2 py-1.5 rounded hover:bg-muted transition-colors cursor-pointer flex items-center justify-between"
+                          >
+                            <span>{partner.name}</span>
+                            <div className="w-2 h-2 rounded-full bg-success"></div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     {/* Status Messages */}
                     {!showAlert && (
-                      <div className="pt-2 border-t border-border space-y-1">
-                        {statusMessages.map((msg, idx) => (
-                          <div key={idx} className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <CheckCircle2 className="w-3 h-3 text-success" />
-                            {msg}
-                          </div>
-                        ))}
+                      <div className="pt-2 border-t border-border">
+                        <div className="text-[10px] font-semibold text-muted-foreground mb-1 uppercase tracking-wide">Dernier scan: Aujourd'hui 14:32</div>
+                        <div className="space-y-1">
+                          {statusMessages.map((msg, idx) => (
+                            <div key={idx} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <CheckCircle2 className="w-3 h-3 text-success flex-shrink-0" />
+                              <span>{msg}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
 
@@ -184,7 +207,7 @@ const Index = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="w-full text-xs"
+                      className="w-full text-xs mt-2"
                       onClick={() => setShowAlert(!showAlert)}
                     >
                       {showAlert ? "Masquer l'alerte" : "Simuler une alerte"}
