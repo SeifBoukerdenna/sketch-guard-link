@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Shield, CheckCircle2, FileText, AlertTriangle, XCircle } from "lucide-react";
+import { Shield, CheckCircle2, FileText, AlertTriangle, XCircle, LogOut } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -42,15 +42,28 @@ const Index = () => {
             <h1 className="text-xl font-bold tracking-tight">CSSDM</h1>
           </div>
 
-          {/* Toggle Button */}
-          <Button
-            onClick={() => setHasAlert(!hasAlert)}
-            variant={hasAlert ? "destructive" : "default"}
-            size="sm"
-            className="font-medium"
-          >
-            {hasAlert ? "État critique" : "État sécurisé"}
-          </Button>
+          <div className="flex items-center gap-3">
+            {/* Toggle Button */}
+            <Button
+              onClick={() => setHasAlert(!hasAlert)}
+              variant={hasAlert ? "destructive" : "default"}
+              size="sm"
+              className="font-medium"
+            >
+              {hasAlert ? "État critique" : "État sécurisé"}
+            </Button>
+
+            {/* Logout Button */}
+            <Button
+              onClick={() => navigate("/")}
+              variant="ghost"
+              size="sm"
+              className="gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              Se déconnecter
+            </Button>
+          </div>
         </div>
       </header>
 

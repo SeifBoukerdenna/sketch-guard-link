@@ -16,9 +16,15 @@ const Landing = () => {
             <span className="text-xl font-semibold">Secure Sec Chain</span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#about" className="text-sm hover:text-primary transition-colors">À Propos</a>
-            <a href="#community" className="text-sm hover:text-primary transition-colors">Communauté</a>
-            <a href="#documentation" className="text-sm hover:text-primary transition-colors">Documentation</a>
+            <button onClick={() => navigate("/about")} className="text-sm hover:text-primary transition-colors">
+              À Propos
+            </button>
+            <button onClick={() => navigate("/community")} className="text-sm hover:text-primary transition-colors">
+              Communauté
+            </button>
+            <button onClick={() => navigate("/documentation")} className="text-sm hover:text-primary transition-colors">
+              Documentation
+            </button>
             <Button onClick={() => navigate("/app")} variant="default" size="sm">
               Se connecter
             </Button>
