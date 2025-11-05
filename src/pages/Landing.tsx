@@ -67,7 +67,7 @@ const Landing = () => {
                     Là où la majorité des outils s'arrêtent au fournisseur direct, SecureSecChain analyse toute la chaîne numérique : jusqu'aux logiciels, API et sous-traitants utilisés en arrière-plan.
                   </p>
                   <p className="text-sm text-primary font-medium">
-                    💡 On ne te dit pas juste "qui est vulnérable", on te montre où le risque se propage et jusqu'où.
+                    💡 On ne vous dit pas juste "qui est vulnérable", on vous montre où le risque se propage et jusqu'où.
                   </p>
                 </div>
               </div>
@@ -141,7 +141,7 @@ const Landing = () => {
                     Les rapports générés automatiquement simplifient la démonstration de conformité (Loi 25, ISO 27001, SOC 2).
                   </p>
                   <p className="text-muted-foreground mb-3">
-                    Tu obtiens des preuves claires pour les audits, sans avoir à tout compiler manuellement.
+                    Vous obtenez des preuves claires pour les audits, sans avoir à tout compiler manuellement.
                   </p>
                 </div>
               </div>
