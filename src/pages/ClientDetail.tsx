@@ -184,7 +184,7 @@ const ClientDetail = () => {
             {/* Supplier Tree SVG */}
             <Card className="bg-card/50 backdrop-blur-sm border-border/50 md:col-span-2">
               <CardContent className="p-12 relative">
-                {showAlert && suppliers.some(s => s.hasAlert) && (
+                {suppliers.some(s => s.hasAlert) && (
                   <div className="absolute top-4 right-4 animate-fade-in">
                     <Badge variant="destructive" className="text-sm">
                       Vulnérabilité détectée
@@ -192,122 +192,148 @@ const ClientDetail = () => {
                   </div>
                 )}
                 <svg width="100%" height="700" viewBox="0 0 700 700" className="overflow-visible">
-                  {/* CSSDM Node */}
-                  <circle cx="350" cy="80" r="50" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="3" />
-                  <text x="350" y="87" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="18" fontWeight="600">
-                    CSSDM
-                  </text>
-
-                  {/* Line from CSSDM to Client */}
-                  <line x1="350" y1="130" x2="350" y2="200" stroke="hsl(var(--primary))" strokeWidth="3" />
-
-                  {/* Client Node */}
-                  <circle cx="350" cy="260" r="60" fill="transparent" stroke="hsl(var(--primary))" strokeWidth="3" />
-                  <text x="350" y="267" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="19" fontWeight="600">
-                    {selectedCompany?.name}
-                  </text>
-
-                  {/* Suppliers */}
-                  {suppliers.map((supplier, index) => {
-                    const totalSuppliers = suppliers.length;
-                    const spacing = 200;
-                    const startX = 350 - ((totalSuppliers - 1) * spacing) / 2;
-                    const supplierX = startX + index * spacing;
-                    const supplierY = 440;
-                    const isAlert = showAlert && supplier.hasAlert;
+                  {(() => {
+                    // Determine if there are any vulnerabilities in the tree
+                    const hasVulnerability = suppliers.some(s => s.hasAlert);
+                    
+                    // CSSDM and Client are parents, so they get warning color if any child has vulnerability
+                    const cssdmColor = hasVulnerability ? "hsl(var(--warning))" : "hsl(var(--success))";
+                    const clientColor = hasVulnerability ? "hsl(var(--warning))" : "hsl(var(--success))";
+                    const cssdmFill = hasVulnerability ? "hsl(var(--warning) / 0.1)" : "hsl(var(--success) / 0.1)";
+                    const clientFill = hasVulnerability ? "hsl(var(--warning) / 0.1)" : "hsl(var(--success) / 0.1)";
                     
                     return (
-                      <g key={supplier.name}>
-                        {/* Line from Client to Supplier */}
-                        <line 
-                          x1="350" 
-                          y1="320" 
-                          x2={supplierX} 
-                          y2={supplierY - 55} 
-                          stroke={isAlert ? "hsl(var(--destructive))" : "hsl(var(--border))"} 
-                          strokeWidth={isAlert ? "3" : "2.5"}
-                          className={isAlert ? "animate-pulse" : ""}
-                        />
-                        
-                        {/* Supplier Node */}
-                        <circle 
-                          cx={supplierX} 
-                          cy={supplierY} 
-                          r="55"
-                          fill={isAlert ? "hsl(var(--destructive) / 0.1)" : "transparent"} 
-                          stroke={isAlert ? "hsl(var(--destructive))" : "hsl(var(--border))"} 
-                          strokeWidth={isAlert ? "2.5" : "2"}
-                          className={isAlert ? "animate-pulse" : ""}
-                        />
-                        <text 
-                          x={supplierX} 
-                          y={supplierY + 6} 
-                          textAnchor="middle" 
-                          fill={isAlert ? "hsl(var(--destructive))" : "hsl(var(--foreground))"} 
-                          fontSize="16" 
-                          fontWeight="600"
-                        >
-                          {supplier.name}
+                      <>
+                        {/* CSSDM Node */}
+                        <circle cx="350" cy="80" r="50" fill={cssdmFill} stroke={cssdmColor} strokeWidth="3" />
+                        <text x="350" y="87" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="18" fontWeight="600">
+                          CSSDM
                         </text>
-                        
-                        {/* Services text */}
-                        <text x={supplierX} y={supplierY + 78} textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
-                          {supplier.services[0]}
-                        </text>
-                        {supplier.services[1] && (
-                          <text x={supplierX} y={supplierY + 95} textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
-                            {supplier.services[1]}
-                          </text>
-                        )}
 
-                        {/* Sub-suppliers */}
-                        {supplier.subSuppliers.map((subSupplier, subIndex) => {
-                          const subSpacing = 90;
-                          const subsCount = supplier.subSuppliers.length;
-                          const subStartX = supplierX - ((subsCount - 1) * subSpacing) / 2;
-                          const subX = subStartX + subIndex * subSpacing;
-                          const subY = 620;
+                        {/* Line from CSSDM to Client */}
+                        <line x1="350" y1="130" x2="350" y2="200" stroke={cssdmColor} strokeWidth="3" />
+
+                        {/* Client Node */}
+                        <circle cx="350" cy="260" r="60" fill={clientFill} stroke={clientColor} strokeWidth="3" />
+                        <text x="350" y="267" textAnchor="middle" fill="hsl(var(--foreground))" fontSize="19" fontWeight="600">
+                          {selectedCompany?.name}
+                        </text>
+
+                        {/* Suppliers */}
+                        {suppliers.map((supplier, index) => {
+                          const totalSuppliers = suppliers.length;
+                          const spacing = 200;
+                          const startX = 350 - ((totalSuppliers - 1) * spacing) / 2;
+                          const supplierX = startX + index * spacing;
+                          const supplierY = 440;
+                          
+                          // Determine node color based on vulnerability status
+                          const hasDirectVulnerability = supplier.hasAlert;
+                          const nodeColor = hasDirectVulnerability 
+                            ? "hsl(var(--destructive))" 
+                            : "hsl(var(--success))";
+                          const nodeFill = hasDirectVulnerability 
+                            ? "hsl(var(--destructive) / 0.1)" 
+                            : "hsl(var(--success) / 0.1)";
                           
                           return (
-                            <g key={subSupplier.name}>
-                              {/* Line to sub-supplier */}
+                            <g key={supplier.name}>
+                              {/* Line from Client to Supplier */}
                               <line 
-                                x1={supplierX} 
-                                y1={supplierY + 55} 
-                                x2={subX} 
-                                y2={subY - 35} 
-                                stroke="hsl(var(--border) / 0.5)" 
-                                strokeWidth="2"
-                                strokeDasharray="5,5"
+                                x1="350" 
+                                y1="320" 
+                                x2={supplierX} 
+                                y2={supplierY - 55} 
+                                stroke={hasDirectVulnerability ? "hsl(var(--destructive))" : clientColor} 
+                                strokeWidth={hasDirectVulnerability ? "3" : "2.5"}
+                                className={hasDirectVulnerability ? "animate-pulse" : ""}
                               />
                               
-                              {/* Sub-supplier Node */}
+                              {/* Supplier Node */}
                               <circle 
-                                cx={subX} 
-                                cy={subY} 
-                                r="35" 
-                                fill="transparent" 
-                                stroke="hsl(var(--border) / 0.6)" 
-                                strokeWidth="2"
+                                cx={supplierX} 
+                                cy={supplierY} 
+                                r="55"
+                                fill={nodeFill} 
+                                stroke={nodeColor} 
+                                strokeWidth="3"
+                                className={hasDirectVulnerability ? "animate-pulse" : ""}
                               />
                               <text 
-                                x={subX} 
-                                y={subY + 5} 
+                                x={supplierX} 
+                                y={supplierY + 6} 
                                 textAnchor="middle" 
-                                fill="hsl(var(--muted-foreground))" 
-                                fontSize="12" 
-                                fontWeight="500"
+                                fill="hsl(var(--foreground))" 
+                                fontSize="16" 
+                                fontWeight="600"
                               >
-                                {subSupplier.name.length > 12 
-                                  ? subSupplier.name.substring(0, 12) + '...' 
-                                  : subSupplier.name}
+                                {supplier.name}
                               </text>
+                              
+                              {/* Services text */}
+                              <text x={supplierX} y={supplierY + 78} textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
+                                {supplier.services[0]}
+                              </text>
+                              {supplier.services[1] && (
+                                <text x={supplierX} y={supplierY + 95} textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="12">
+                                  {supplier.services[1]}
+                                </text>
+                              )}
+
+                              {/* Sub-suppliers */}
+                              {supplier.subSuppliers.map((subSupplier, subIndex) => {
+                                const subSpacing = 90;
+                                const subsCount = supplier.subSuppliers.length;
+                                const subStartX = supplierX - ((subsCount - 1) * subSpacing) / 2;
+                                const subX = subStartX + subIndex * subSpacing;
+                                const subY = 620;
+                                
+                                // Sub-suppliers are always green (no vulnerabilities in mock data)
+                                const subColor = "hsl(var(--success))";
+                                const subFill = "hsl(var(--success) / 0.1)";
+                                
+                                return (
+                                  <g key={subSupplier.name}>
+                                    {/* Line to sub-supplier */}
+                                    <line 
+                                      x1={supplierX} 
+                                      y1={supplierY + 55} 
+                                      x2={subX} 
+                                      y2={subY - 35} 
+                                      stroke={subColor} 
+                                      strokeWidth="2"
+                                    />
+                                    
+                                    {/* Sub-supplier Node */}
+                                    <circle 
+                                      cx={subX} 
+                                      cy={subY} 
+                                      r="35" 
+                                      fill={subFill} 
+                                      stroke={subColor} 
+                                      strokeWidth="2"
+                                    />
+                                    <text 
+                                      x={subX} 
+                                      y={subY + 5} 
+                                      textAnchor="middle" 
+                                      fill="hsl(var(--foreground))" 
+                                      fontSize="12" 
+                                      fontWeight="500"
+                                    >
+                                      {subSupplier.name.length > 12 
+                                        ? subSupplier.name.substring(0, 12) + '...' 
+                                        : subSupplier.name}
+                                    </text>
+                                  </g>
+                                );
+                              })}
                             </g>
                           );
                         })}
-                      </g>
+                      </>
                     );
-                  })}
+                  })()}
                 </svg>
               </CardContent>
             </Card>
