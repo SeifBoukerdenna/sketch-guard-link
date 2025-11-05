@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Shield, CheckCircle2, FileText, AlertTriangle, XCircle, LogOut, Plus } from "lucide-react";
+import { Shield, CheckCircle2, FileText, AlertTriangle, XCircle, LogOut, Plus, Settings } from "lucide-react";
 import { toast } from "sonner";
+import { VendorIntegrationFlow } from "@/components/VendorIntegrationFlow";
 import {
   Select,
   SelectContent,
@@ -27,6 +28,7 @@ const Index = () => {
   const [selectedCompany, setSelectedCompany] = useState("");
   const [hasAlert, setHasAlert] = useState(false);
   const [isAddVendorOpen, setIsAddVendorOpen] = useState(false);
+  const [isVendorIntegrationOpen, setIsVendorIntegrationOpen] = useState(false);
   const [legalName, setLegalName] = useState("");
   const [domainName, setDomainName] = useState("");
   const [vendors, setVendors] = useState([
@@ -82,6 +84,17 @@ const Index = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Vendor Integration Button */}
+            <Button
+              onClick={() => setIsVendorIntegrationOpen(true)}
+              variant="outline"
+              size="sm"
+              className="gap-2"
+            >
+              <Settings className="w-4 h-4" />
+              Vendor Integration
+            </Button>
+
             {/* Toggle Button */}
             <Button
               onClick={() => setHasAlert(!hasAlert)}
@@ -335,6 +348,12 @@ const Index = () => {
           )}
         </div>
       </main>
+
+      {/* Vendor Integration Flow */}
+      <VendorIntegrationFlow 
+        open={isVendorIntegrationOpen} 
+        onOpenChange={setIsVendorIntegrationOpen}
+      />
 
       {/* Add Vendor Dialog */}
       <Dialog open={isAddVendorOpen} onOpenChange={setIsAddVendorOpen}>
