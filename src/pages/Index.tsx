@@ -161,7 +161,7 @@ const Index = () => {
                 <CardContent className="p-8 space-y-6">
                   {/* Main Status Section */}
                   <div>
-                    <h2 className="text-lg font-bold mb-4 text-foreground/90">État de sécurité</h2>
+                    <h2 className="text-lg font-bold mb-4 text-foreground/90">État de sécurité - État global</h2>
                     <div className="space-y-3">
                       <div className="flex items-start gap-3 group">
                         <div className="p-1.5 rounded-full bg-success/10 mt-0.5">
