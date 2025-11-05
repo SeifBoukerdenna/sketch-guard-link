@@ -59,10 +59,7 @@ cosign sign --key cosign.key \\
     name: "GitHub Releases",
     icon: Shield,
     description: "Manual or automated SBOM upload during release creation with SHA verification.",
-    snippet: `gh release upload v1.0.0 sbom.json \\
-  --repo yourorg/yourrepo
-curl -X POST https://api.supplychainsec.io/sbom \\
-  -H "X-GitHub-Token: \${{ secrets.GITHUB_TOKEN }}"`,
+    snippet: 'gh release upload v1.0.0 sbom.json \\\n  --repo yourorg/yourrepo\ncurl -X POST https://api.supplychainsec.io/sbom \\\n  -H "X-GitHub-Token: ${{ secrets.GITHUB_TOKEN }}"',
   },
 ];
 
