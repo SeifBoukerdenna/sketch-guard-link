@@ -179,6 +179,45 @@ const ClientDetail = () => {
             </p>
           </div>
 
+          {/* SBOM Description Section */}
+          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="space-y-3 flex-1">
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-lg font-semibold">SBOM du client</h3>
+                    <Badge variant="outline" className="bg-success/10 text-success border-success/30">
+                      Vérifié
+                    </Badge>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">Format</p>
+                      <p className="text-sm font-medium">CycloneDX 1.5</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">Dernière soumission</p>
+                      <p className="text-sm font-medium">5 nov 2025, 07:45</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">Composants</p>
+                      <p className="text-sm font-medium">247 dépendances</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">Signature</p>
+                      <p className="text-sm font-medium text-success">Cosign validé</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground pt-2 border-t border-border/30">
+                    Le SBOM de Micrologic contient l'inventaire complet des composants logiciels utilisés 
+                    dans leur infrastructure, incluant Red Hat OpenShift, Veeam Backup et VMware vSphere. 
+                    Tous les composants sont tracés avec leur version et leur digest pour une vérification continue.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Grid layout for Tree and Scan Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Supplier Tree SVG */}
