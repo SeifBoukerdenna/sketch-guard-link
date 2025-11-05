@@ -184,7 +184,7 @@ const ClientDetail = () => {
             {/* Supplier Tree SVG */}
             <Card className="bg-card/50 backdrop-blur-sm border-border/50 md:col-span-2">
               <CardContent className="p-12 relative">
-                {suppliers.some(s => s.hasAlert) && (
+                {showAlert && suppliers.some(s => s.hasAlert) && (
                   <div className="absolute top-4 right-4 animate-fade-in">
                     <Badge variant="destructive" className="text-sm">
                       Vulnérabilité détectée
@@ -193,8 +193,8 @@ const ClientDetail = () => {
                 )}
                 <svg width="100%" height="700" viewBox="0 0 700 700" className="overflow-visible">
                   {(() => {
-                    // Determine if there are any vulnerabilities in the tree
-                    const hasVulnerability = suppliers.some(s => s.hasAlert);
+                    // Determine if there are any vulnerabilities in the tree (only when alert is active)
+                    const hasVulnerability = showAlert && suppliers.some(s => s.hasAlert);
                     
                     // CSSDM and Client are parents, so they get warning color if any child has vulnerability
                     const cssdmColor = hasVulnerability ? "hsl(var(--warning))" : "hsl(var(--success))";
@@ -227,8 +227,8 @@ const ClientDetail = () => {
                           const supplierX = startX + index * spacing;
                           const supplierY = 440;
                           
-                          // Determine node color based on vulnerability status
-                          const hasDirectVulnerability = supplier.hasAlert;
+                          // Determine node color based on vulnerability status (only when alert is active)
+                          const hasDirectVulnerability = showAlert && supplier.hasAlert;
                           const nodeColor = hasDirectVulnerability 
                             ? "hsl(var(--destructive))" 
                             : "hsl(var(--success))";
