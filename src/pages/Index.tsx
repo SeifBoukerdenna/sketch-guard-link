@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Shield, CheckCircle2, FileText, AlertTriangle, XCircle, LogOut } from "lucide-react";
+import { Shield, CheckCircle2, FileText, AlertTriangle, XCircle, LogOut, Plus } from "lucide-react";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -10,25 +11,63 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 
 const Index = () => {
   const navigate = useNavigate();
   const [selectedCompany, setSelectedCompany] = useState("");
   const [hasAlert, setHasAlert] = useState(false);
+  const [isAddVendorOpen, setIsAddVendorOpen] = useState(false);
+  const [legalName, setLegalName] = useState("");
+  const [domainName, setDomainName] = useState("");
+  const [vendors, setVendors] = useState([
+    { id: "micrologic", name: "Micrologic" },
+    { id: "zens", name: "Zens Canada Corp." },
+    { id: "inso", name: "INSO INC" },
+    { id: "coginov", name: "COGINOV inc." },
+  ]);
 
   const handleCompanyChange = (value: string) => {
+    if (value === "add-vendor") {
+      setIsAddVendorOpen(true);
+      return;
+    }
     if (value === "micrologic") {
       setSelectedCompany(value);
       navigate(`/client/${value}`);
     }
   };
 
-  const companies = [
-    { id: "micrologic", name: "Micrologic" },
-    { id: "zens", name: "Zens Canada Corp." },
-    { id: "inso", name: "INSO INC" },
-    { id: "coginov", name: "COGINOV inc." },
-  ];
+  const handleAddVendor = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!legalName.trim() || !domainName.trim()) {
+      toast.error("Veuillez remplir tous les champs");
+      return;
+    }
+
+    const newVendorId = legalName.toLowerCase().replace(/\s+/g, "-");
+    const newVendor = {
+      id: newVendorId,
+      name: legalName,
+    };
+
+    setVendors([...vendors, newVendor]);
+    toast.success("Vendor ajouté avec succès! Un email d'invitation a été envoyé.");
+    
+    setLegalName("");
+    setDomainName("");
+    setIsAddVendorOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -77,7 +116,7 @@ const Index = () => {
                 <SelectValue placeholder="Sélectionner un client" />
               </SelectTrigger>
               <SelectContent className="bg-card border-border/50 rounded-xl shadow-2xl z-50">
-                {companies.map((company) => (
+                {vendors.map((company) => (
                   <SelectItem 
                     key={company.id} 
                     value={company.id}
@@ -87,6 +126,16 @@ const Index = () => {
                     {company.name}
                   </SelectItem>
                 ))}
+                <Separator className="my-2" />
+                <SelectItem 
+                  value="add-vendor"
+                  className="hover:bg-primary/10 cursor-pointer rounded-lg font-medium text-primary"
+                >
+                  <div className="flex items-center gap-2">
+                    <Plus className="w-4 h-4" />
+                    <span>Ajouter un vendor</span>
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -286,6 +335,63 @@ const Index = () => {
           )}
         </div>
       </main>
+
+      {/* Add Vendor Dialog */}
+      <Dialog open={isAddVendorOpen} onOpenChange={setIsAddVendorOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Ajouter un nouveau vendor</DialogTitle>
+            <DialogDescription>
+              Remplissez les informations du vendor. Nous enverrons un email avec un lien sécurisé 
+              pour qu'ils puissent déposer leur SBOM sur notre plateforme.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleAddVendor} className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <Label htmlFor="legalName">Nom légal</Label>
+              <Input
+                id="legalName"
+                placeholder="Ex: Acme Corporation Inc."
+                value={legalName}
+                onChange={(e) => setLegalName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="domainName">Nom de domaine</Label>
+              <Input
+                id="domainName"
+                placeholder="Ex: acme.com"
+                value={domainName}
+                onChange={(e) => setDomainName(e.target.value)}
+                required
+              />
+            </div>
+            <div className="bg-muted/30 p-4 rounded-lg border border-border/50">
+              <p className="text-sm text-muted-foreground">
+                📧 Un email sera automatiquement envoyé au vendor avec un lien sécurisé 
+                pour accéder à notre plateforme et déposer leur SBOM.
+              </p>
+            </div>
+            <div className="flex gap-3 justify-end pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setIsAddVendorOpen(false);
+                  setLegalName("");
+                  setDomainName("");
+                }}
+              >
+                Annuler
+              </Button>
+              <Button type="submit">
+                Ajouter le vendor
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
