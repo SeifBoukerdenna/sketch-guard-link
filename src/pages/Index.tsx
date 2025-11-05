@@ -29,6 +29,7 @@ const Index = () => {
   const [hasAlert, setHasAlert] = useState(false);
   const [isAddVendorOpen, setIsAddVendorOpen] = useState(false);
   const [isVendorIntegrationOpen, setIsVendorIntegrationOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [legalName, setLegalName] = useState("");
   const [domainName, setDomainName] = useState("");
   const [vendors, setVendors] = useState([
@@ -231,12 +232,12 @@ const Index = () => {
                           Scan quotidien effectué à 08:00
                         </p>
                       </div>
-                      <a
-                        href="#"
+                      <button
+                        onClick={() => setIsReportOpen(true)}
                         className="text-xs text-primary hover:text-primary/80 font-medium transition-colors underline-offset-4 hover:underline"
                       >
                         Voir le rapport complet
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </CardContent>
@@ -334,12 +335,12 @@ const Index = () => {
                           Alerte détectée à 14:23
                         </p>
                       </div>
-                      <a
-                        href="#"
+                      <button
+                        onClick={() => setIsReportOpen(true)}
                         className="text-xs text-primary hover:text-primary/80 font-medium transition-colors underline-offset-4 hover:underline"
                       >
                         Voir le rapport d'incident
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </CardContent>
@@ -348,6 +349,197 @@ const Index = () => {
           )}
         </div>
       </main>
+
+      {/* Rapport Complet Dialog */}
+      <Dialog open={isReportOpen} onOpenChange={setIsReportOpen}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-xl">
+              {hasAlert ? "Rapport d'incident complet" : "Rapport de scan complet"}
+            </DialogTitle>
+            <DialogDescription>
+              {hasAlert 
+                ? "Détails de l'alerte de sécurité détectée" 
+                : "Scan quotidien effectué le 5 novembre 2025 à 08:00"}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6 mt-4">
+            {/* Summary Section */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-sm">Résumé du scan</h3>
+              <div className="grid grid-cols-3 gap-4">
+                <Card className="bg-card/50">
+                  <CardContent className="p-4 text-center">
+                    <div className={`text-2xl font-bold ${hasAlert ? 'text-warning' : 'text-success'}`}>
+                      {hasAlert ? '87%' : '100%'}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">Disponibilité</div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-card/50">
+                  <CardContent className="p-4 text-center">
+                    <div className={`text-2xl font-bold ${hasAlert ? 'text-destructive' : 'text-foreground'}`}>
+                      {hasAlert ? '3' : '0'}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">Incidents</div>
+                  </CardContent>
+                </Card>
+                <Card className="bg-card/50">
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl font-bold text-foreground">
+                      {hasAlert ? '21' : '24'}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">Services actifs</div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Vulnerabilities Section */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-sm">Vulnérabilités</h3>
+              {hasAlert ? (
+                <div className="space-y-2">
+                  <Card className="bg-destructive/5 border-destructive/20">
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle className="w-5 h-5 text-destructive mt-0.5" />
+                        <div className="flex-1 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <p className="font-semibold text-sm">CVE-2025-18723</p>
+                            <span className="text-xs bg-destructive/10 text-destructive px-2 py-1 rounded-md font-medium">
+                              Critique
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Red Hat OpenShift 4.15 - Élévation de privilèges via le composant de gestion des routeurs d'entrée
+                          </p>
+                          <div className="pt-2 border-t border-border/30">
+                            <p className="text-xs text-muted-foreground">
+                              <span className="font-medium">Composant affecté:</span> OpenShift Router
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              <span className="font-medium">Score CVSS:</span> 9.8 (Critique)
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              <span className="font-medium">Vecteur d'attaque:</span> Réseau / Aucune authentification requise
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : (
+                <Card className="bg-success/5 border-success/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-success" />
+                      <p className="text-sm text-success font-medium">
+                        Aucune vulnérabilité détectée
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+
+            {/* Certificates Section */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-sm">Certificats SSL/TLS</h3>
+              <Card className="bg-card/50">
+                <CardContent className="p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-success" />
+                      <span className="text-sm font-medium">*.cssdm.gouv.qc.ca</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">Valide</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground pl-6">
+                    Émis par: Let's Encrypt • Expire le: 15 mars 2026
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Network Security Section */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-sm">Sécurité réseau</h3>
+              <Card className="bg-card/50">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Ports ouverts</span>
+                    <span className="text-sm font-medium">{hasAlert ? '3' : '0'}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Pare-feu</span>
+                    <span className="text-sm font-medium text-success">Actif</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Protection DDoS</span>
+                    <span className="text-sm font-medium text-success">Actif</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">WAF</span>
+                    <span className="text-sm font-medium text-success">Actif</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Dependencies Section */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-sm">Dépendances</h3>
+              <Card className="bg-card/50">
+                <CardContent className="p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Packages npm</span>
+                    <span className="text-sm font-medium">247 / 247 à jour</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Composants système</span>
+                    <span className="text-sm font-medium">18 / 18 à jour</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Images Docker</span>
+                    <span className="text-sm font-medium">12 / 12 sécurisées</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {hasAlert && (
+              <div className="space-y-3">
+                <h3 className="font-semibold text-sm text-destructive">Actions requises</h3>
+                <Card className="bg-destructive/5 border-destructive/20">
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-destructive mt-2 flex-shrink-0" />
+                      <p className="text-sm">
+                        Ouvrir un ticket Red Hat via Micrologic pour obtenir le correctif ou mitigation temporaire
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-destructive mt-2 flex-shrink-0" />
+                      <p className="text-sm">
+                        Documenter l'incident dans le registre des incidents de confidentialité
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-destructive mt-2 flex-shrink-0" />
+                      <p className="text-sm">
+                        Notifier les équipes de sécurité et établir un plan de mitigation
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Vendor Integration Flow */}
       <VendorIntegrationFlow 
