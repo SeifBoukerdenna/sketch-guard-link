@@ -39,12 +39,6 @@ const ClientDetail = () => {
             { name: "IBM Cloud", services: ["Infrastructure"] },
           ]
         },
-        {
-          name: "VMware",
-          services: ["vSphere", "ESXi"],
-          hasAlert: false,
-          subSuppliers: []
-        },
       ]
     },
     zens: {
