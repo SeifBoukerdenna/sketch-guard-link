@@ -437,25 +437,25 @@ const ClientDetail = () => {
 
       {/* Scan Summary Dialog */}
       <Dialog open={showScanDialog} onOpenChange={setShowScanDialog}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-2xl flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-primary" />
+            <DialogTitle className="text-xl flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-primary" />
               Résumé du scan quotidien
             </DialogTitle>
-            <DialogDescription>
-              Aperçu détaillé du dernier scan de sécurité pour {selectedCompany?.name}
+            <DialogDescription className="text-sm">
+              Aperçu du dernier scan pour {selectedCompany?.name}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-6 mt-4">
+          <div className="space-y-4">
             {/* Status Badge */}
             <div className="flex items-center justify-between">
-              <Badge variant="outline" className="text-base px-4 py-2 bg-success/10 text-success border-success/30">
-                <CheckCircle2 className="w-4 h-4 mr-2" />
+              <Badge variant="outline" className="text-sm px-3 py-1 bg-success/10 text-success border-success/30">
+                <CheckCircle2 className="w-3 h-3 mr-1" />
                 Scan actif
               </Badge>
-              <Badge variant="outline" className="text-sm">
+              <Badge variant="outline" className="text-xs">
                 Fréquence: Quotidienne
               </Badge>
             </div>
@@ -463,30 +463,30 @@ const ClientDetail = () => {
             <Separator />
 
             {/* Scan Timing Info */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <Card className="bg-card/50">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
+                <CardHeader className="pb-2 pt-3 px-3">
+                  <CardTitle className="text-xs font-medium flex items-center gap-1.5 text-muted-foreground">
+                    <Clock className="w-3 h-3" />
                     Dernier scan
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-xl font-semibold">Aujourd'hui</p>
-                  <p className="text-sm text-muted-foreground">à 08:00</p>
+                <CardContent className="px-3 pb-3">
+                  <p className="text-lg font-semibold">Aujourd'hui</p>
+                  <p className="text-xs text-muted-foreground">à 08:00</p>
                 </CardContent>
               </Card>
 
               <Card className="bg-card/50">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
-                    <Calendar className="w-4 h-4" />
+                <CardHeader className="pb-2 pt-3 px-3">
+                  <CardTitle className="text-xs font-medium flex items-center gap-1.5 text-muted-foreground">
+                    <Calendar className="w-3 h-3" />
                     Prochain scan
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-xl font-semibold">Demain</p>
-                  <p className="text-sm text-muted-foreground">à 08:00</p>
+                <CardContent className="px-3 pb-3">
+                  <p className="text-lg font-semibold">Demain</p>
+                  <p className="text-xs text-muted-foreground">à 08:00</p>
                 </CardContent>
               </Card>
             </div>
@@ -494,39 +494,39 @@ const ClientDetail = () => {
             <Separator />
 
             {/* Security Metrics */}
-            <div className="space-y-4">
-              <h3 className="font-semibold flex items-center gap-2">
-                <Activity className="w-5 h-5 text-primary" />
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold flex items-center gap-2">
+                <Activity className="w-4 h-4 text-primary" />
                 Métriques de sécurité
               </h3>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-success/10 border border-success/30 rounded-lg p-4">
-                  <p className="text-sm text-muted-foreground mb-1">Vulnérabilités détectées</p>
-                  <p className="text-3xl font-bold text-success">0</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-success/10 border border-success/30 rounded-lg p-3">
+                  <p className="text-xs text-muted-foreground mb-1">Vulnérabilités détectées</p>
+                  <p className="text-2xl font-bold text-success">0</p>
                 </div>
 
-                <div className="bg-success/10 border border-success/30 rounded-lg p-4">
-                  <p className="text-sm text-muted-foreground mb-1">Niveau de conformité</p>
-                  <p className="text-3xl font-bold text-success">100%</p>
+                <div className="bg-success/10 border border-success/30 rounded-lg p-3">
+                  <p className="text-xs text-muted-foreground mb-1">Niveau de conformité</p>
+                  <p className="text-2xl font-bold text-success">100%</p>
                 </div>
               </div>
 
               <Card className="bg-card/50 border-primary/20">
-                <CardContent className="pt-6">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Fournisseurs scannés</span>
+                <CardContent className="pt-4 pb-3 px-3">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Fournisseurs scannés</span>
                       <span className="font-semibold">{suppliers.length}</span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Services analysés</span>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Services analysés</span>
                       <span className="font-semibold">
                         {suppliers.reduce((acc, s) => acc + s.services.length, 0)}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">Sous-fournisseurs</span>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Sous-fournisseurs</span>
                       <span className="font-semibold">
                         {suppliers.reduce((acc, s) => acc + s.subSuppliers.length, 0)}
                       </span>
@@ -536,14 +536,12 @@ const ClientDetail = () => {
               </Card>
             </div>
 
-            <Separator />
-
             {/* Action Buttons */}
-            <div className="flex gap-3 justify-end">
-              <Button variant="outline" onClick={() => setShowScanDialog(false)}>
+            <div className="flex gap-2 justify-end pt-2">
+              <Button variant="outline" size="sm" onClick={() => setShowScanDialog(false)}>
                 Fermer
               </Button>
-              <Button onClick={() => {
+              <Button size="sm" onClick={() => {
                 setShowScanDialog(false);
                 navigate(`/client/${clientId}/scans`);
               }}>
