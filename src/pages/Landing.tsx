@@ -13,7 +13,7 @@ const Landing = () => {
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Shield className="w-8 h-8 text-primary" />
-            <span className="text-xl font-semibold">Secure Chain Sec</span>
+            <span className="text-xl font-semibold">SupplyChainSec</span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <button onClick={() => navigate("/about")} className="text-sm hover:text-primary transition-colors">
@@ -51,7 +51,7 @@ const Landing = () => {
       {/* About Us - Valeur Unique */}
       <section id="about" className="container mx-auto px-6 py-16">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center">Valeur Unique de SecureChainSec</h2>
+          <h2 className="text-3xl font-bold mb-12 text-center">Valeur Unique de SupplyChainSec</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* 1. Visibilité complète */}
@@ -61,10 +61,10 @@ const Landing = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-3">🧠 Visibilité complète sur les fournisseurs et leurs risques</h3>
                   <p className="text-muted-foreground mb-3">
-                    SecureChainSec donne aux organisations une vision claire, automatisée et à plusieurs niveaux de leurs fournisseurs technologiques et des risques associés à chacun.
+                    SupplyChainSec donne aux organisations une vision claire, automatisée et à plusieurs niveaux de leurs fournisseurs technologiques et des risques associés à chacun.
                   </p>
                   <p className="text-muted-foreground mb-3">
-                    Là où la majorité des outils s'arrêtent au fournisseur direct, SecureChainSec analyse toute la chaîne numérique : jusqu'aux logiciels, API et sous-traitants utilisés en arrière-plan.
+                    Là où la majorité des outils s'arrêtent au fournisseur direct, SupplyChainSec analyse toute la chaîne numérique : jusqu'aux logiciels, API et sous-traitants utilisés en arrière-plan.
                   </p>
                   <p className="text-sm text-primary font-medium">
                     💡 On ne vous dit pas juste "qui est vulnérable", on vous montre où le risque se propage et jusqu'où.
@@ -99,7 +99,7 @@ const Landing = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-3">🔒 Traduction du risque technique en impact métier</h3>
                   <p className="text-muted-foreground mb-3">
-                    SecureChainSec convertit des vulnérabilités complexes (CVE, ports, composants) en conséquences claires et compréhensibles pour les gestionnaires :
+                    SupplyChainSec convertit des vulnérabilités complexes (CVE, ports, composants) en conséquences claires et compréhensibles pour les gestionnaires :
                   </p>
                   <ul className="text-muted-foreground mb-3 list-disc list-inside space-y-1">
                     <li>"Les données élèves pourraient être exposées via Red Hat OpenShift."</li>
@@ -232,7 +232,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="border-t border-border mt-20">
         <div className="container mx-auto px-6 py-8 text-center text-muted-foreground">
-          <p>© 2025 Secure Chain Sec. Tous droits réservés.</p>
+          <p>© 2025 SupplyChainSec. Tous droits réservés.</p>
         </div>
       </footer>
     </div>

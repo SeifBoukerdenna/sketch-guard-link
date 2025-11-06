@@ -13,7 +13,7 @@ const About = () => {
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Shield className="w-8 h-8 text-primary" />
-            <span className="text-xl font-semibold">Secure Chain Sec</span>
+            <span className="text-xl font-semibold">SupplyChainSec</span>
           </div>
           <Button onClick={() => navigate("/")} variant="ghost" size="sm" className="gap-2">
             <ArrowLeft className="w-4 h-4" /> Retour
@@ -24,12 +24,12 @@ const About = () => {
       {/* Content */}
       <section className="container mx-auto px-6 py-16">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8">À Propos de Secure Chain Sec</h1>
+          <h1 className="text-4xl font-bold mb-8">À Propos de SupplyChainSec</h1>
 
           <Card className="p-8 mb-8">
             <h2 className="text-2xl font-semibold mb-4">Notre Mission</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              Secure Chain Sec est une plateforme avancée de protection de la chaîne d'approvisionnement numérique
+              SupplyChainSec est une plateforme avancée de protection de la chaîne d'approvisionnement numérique
               conçue spécifiquement pour les institutions québécoises. Notre mission est de fournir une visibilité
               complète sur les risques de sécurité tout en facilitant la collaboration entre organisations.
             </p>
@@ -47,7 +47,7 @@ const About = () => {
           <Card className="p-8">
             <h2 className="text-2xl font-semibold mb-4">Pour Qui?</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Secure Chain Sec est conçu pour les institutions québécoises - écoles, hôpitaux, municipalités
+              SupplyChainSec est conçu pour les institutions québécoises - écoles, hôpitaux, municipalités
               et organisations gouvernementales - qui cherchent à protéger leurs données sensibles et à se
               conformer aux réglementations comme la Loi 25.
             </p>
