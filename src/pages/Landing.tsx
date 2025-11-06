@@ -13,7 +13,7 @@ const Landing = () => {
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Shield className="w-8 h-8 text-primary" />
-            <span className="text-xl font-semibold">Secure Sec Chain</span>
+            <span className="text-xl font-semibold">Secure Chain Sec</span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <button onClick={() => navigate("/about")} className="text-sm hover:text-primary transition-colors">
@@ -52,7 +52,7 @@ const Landing = () => {
       <section id="about" className="container mx-auto px-6 py-16">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-12 text-center">Valeur Unique de SecureChainSec</h2>
-          
+
           <div className="grid md:grid-cols-2 gap-6">
             {/* 1. Visibilité complète */}
             <Card className="p-6 hover:border-primary/50 transition-colors">
@@ -204,8 +204,8 @@ const Landing = () => {
           <Users className="w-16 h-16 text-primary mx-auto mb-6" />
           <h2 className="text-3xl font-bold mb-6">Communauté</h2>
           <p className="text-muted-foreground mb-8 leading-relaxed">
-            Rejoignez une communauté active de professionnels de la sécurité. Partagez vos découvertes, 
-            apprenez des autres et contribuez à un écosystème de sécurité plus robuste. 
+            Rejoignez une communauté active de professionnels de la sécurité. Partagez vos découvertes,
+            apprenez des autres et contribuez à un écosystème de sécurité plus robuste.
             Ensemble, nous rendons le cyberespace plus sûr.
           </p>
           <Button variant="outline" size="lg">
@@ -220,7 +220,7 @@ const Landing = () => {
           <BookOpen className="w-16 h-16 text-primary mx-auto mb-6" />
           <h2 className="text-3xl font-bold mb-6">Documentation</h2>
           <p className="text-muted-foreground mb-8 leading-relaxed">
-            Explorez notre documentation complète pour tirer le meilleur parti de la plateforme. 
+            Explorez notre documentation complète pour tirer le meilleur parti de la plateforme.
             Guides d'installation, tutoriels, API reference et bonnes pratiques de sécurité.
           </p>
           <Button variant="outline" size="lg">
@@ -232,7 +232,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="border-t border-border mt-20">
         <div className="container mx-auto px-6 py-8 text-center text-muted-foreground">
-          <p>© 2025 Secure Sec Chain. Tous droits réservés.</p>
+          <p>© 2025 Secure Chain Sec. Tous droits réservés.</p>
         </div>
       </footer>
     </div>

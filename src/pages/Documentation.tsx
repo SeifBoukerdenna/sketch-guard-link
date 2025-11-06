@@ -13,7 +13,7 @@ const Documentation = () => {
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Shield className="w-8 h-8 text-primary" />
-            <span className="text-xl font-semibold">Secure Sec Chain</span>
+            <span className="text-xl font-semibold">Secure Chain Sec</span>
           </div>
           <Button onClick={() => navigate("/")} variant="ghost" size="sm" className="gap-2">
             <ArrowLeft className="w-4 h-4" /> Retour
@@ -25,10 +25,10 @@ const Documentation = () => {
       <section className="container mx-auto px-6 py-16">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold mb-8">Documentation</h1>
-          
+
           <div className="mb-12">
             <p className="text-xl text-muted-foreground">
-              Guides complets pour tirer le meilleur parti de Secure Sec Chain
+              Guides complets pour tirer le meilleur parti de Secure Chain Sec
             </p>
           </div>
 
