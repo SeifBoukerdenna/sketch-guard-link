@@ -125,9 +125,8 @@ export const VendorIntegrationFlow = ({ open, onOpenChange }: VendorIntegrationF
                   return (
                     <Card
                       key={option.id}
-                      className={`cursor-pointer transition-all hover:border-primary ${
-                        selectedIntegration === option.id ? "border-primary ring-2 ring-primary/20" : ""
-                      }`}
+                      className={`cursor-pointer transition-all hover:border-primary ${selectedIntegration === option.id ? "border-primary ring-2 ring-primary/20" : ""
+                        }`}
                       onClick={() => setSelectedIntegration(option.id)}
                     >
                       <CardContent className="p-4">
@@ -177,15 +176,6 @@ export const VendorIntegrationFlow = ({ open, onOpenChange }: VendorIntegrationF
             <div>
               <h3 className="text-lg font-semibold mb-4">Étape 2: Identité & portée</h3>
               <div className="space-y-4">
-                <div>
-                  <Label htmlFor="supplierName">Nom du fournisseur</Label>
-                  <Input
-                    id="supplierName"
-                    placeholder="Ex: Micrologic Inc."
-                    value={supplierName}
-                    onChange={(e) => setSupplierName(e.target.value)}
-                  />
-                </div>
                 <div>
                   <Label htmlFor="projectName">Nom du projet(s)</Label>
                   <Input
@@ -330,7 +320,7 @@ export const VendorIntegrationFlow = ({ open, onOpenChange }: VendorIntegrationF
             <div className="mt-6 p-4 bg-muted/50 rounded-lg border">
               <p className="text-sm font-medium mb-2">État actuel:</p>
               <p className="text-xs text-muted-foreground">
-                <strong>Aucun SBOM reçu.</strong> Ajoutez le snippet dans votre CI. 
+                <strong>Aucun SBOM reçu.</strong> Ajoutez le snippet dans votre CI.
                 Les SBOMs non signés ou sans digest seront rejetés.
               </p>
             </div>
