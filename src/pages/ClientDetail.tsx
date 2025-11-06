@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Shield, ArrowLeft, BookOpen, AlertTriangle, FolderOpen } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Shield, ArrowLeft, BookOpen, AlertTriangle, FolderOpen, Calendar, Clock, CheckCircle2, Activity } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
 
 const ClientDetail = () => {
   const { clientId } = useParams();
   const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
+  const [showScanDialog, setShowScanDialog] = useState(false);
 
   const companies = [
     { id: "micrologic", name: "Micrologic" },
@@ -152,7 +155,7 @@ const ClientDetail = () => {
               <AlertTriangle className="w-4 h-4 mr-2" />
               {showAlert ? "Alerte active" : "Simuler alerte"}
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => setShowScanDialog(true)}>
               <BookOpen className="w-4 h-4 mr-2" />
               Scan quotidien
             </Button>
@@ -431,6 +434,125 @@ const ClientDetail = () => {
           </div>
         </div>
       </main>
+
+      {/* Scan Summary Dialog */}
+      <Dialog open={showScanDialog} onOpenChange={setShowScanDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl flex items-center gap-2">
+              <BookOpen className="w-6 h-6 text-primary" />
+              Résumé du scan quotidien
+            </DialogTitle>
+            <DialogDescription>
+              Aperçu détaillé du dernier scan de sécurité pour {selectedCompany?.name}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 mt-4">
+            {/* Status Badge */}
+            <div className="flex items-center justify-between">
+              <Badge variant="outline" className="text-base px-4 py-2 bg-success/10 text-success border-success/30">
+                <CheckCircle2 className="w-4 h-4 mr-2" />
+                Scan actif
+              </Badge>
+              <Badge variant="outline" className="text-sm">
+                Fréquence: Quotidienne
+              </Badge>
+            </div>
+
+            <Separator />
+
+            {/* Scan Timing Info */}
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="bg-card/50">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+                    <Clock className="w-4 h-4" />
+                    Dernier scan
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xl font-semibold">Aujourd'hui</p>
+                  <p className="text-sm text-muted-foreground">à 08:00</p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-card/50">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+                    <Calendar className="w-4 h-4" />
+                    Prochain scan
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xl font-semibold">Demain</p>
+                  <p className="text-sm text-muted-foreground">à 08:00</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Separator />
+
+            {/* Security Metrics */}
+            <div className="space-y-4">
+              <h3 className="font-semibold flex items-center gap-2">
+                <Activity className="w-5 h-5 text-primary" />
+                Métriques de sécurité
+              </h3>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-success/10 border border-success/30 rounded-lg p-4">
+                  <p className="text-sm text-muted-foreground mb-1">Vulnérabilités détectées</p>
+                  <p className="text-3xl font-bold text-success">0</p>
+                </div>
+
+                <div className="bg-success/10 border border-success/30 rounded-lg p-4">
+                  <p className="text-sm text-muted-foreground mb-1">Niveau de conformité</p>
+                  <p className="text-3xl font-bold text-success">100%</p>
+                </div>
+              </div>
+
+              <Card className="bg-card/50 border-primary/20">
+                <CardContent className="pt-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Fournisseurs scannés</span>
+                      <span className="font-semibold">{suppliers.length}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Services analysés</span>
+                      <span className="font-semibold">
+                        {suppliers.reduce((acc, s) => acc + s.services.length, 0)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Sous-fournisseurs</span>
+                      <span className="font-semibold">
+                        {suppliers.reduce((acc, s) => acc + s.subSuppliers.length, 0)}
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Separator />
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 justify-end">
+              <Button variant="outline" onClick={() => setShowScanDialog(false)}>
+                Fermer
+              </Button>
+              <Button onClick={() => {
+                setShowScanDialog(false);
+                navigate(`/client/${clientId}/scans`);
+              }}>
+                Voir historique complet
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
