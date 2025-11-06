@@ -52,7 +52,7 @@ const Index = () => {
 
   const handleAddVendor = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!legalName.trim() || !domainName.trim()) {
       toast.error("Veuillez remplir tous les champs");
       return;
@@ -66,7 +66,7 @@ const Index = () => {
 
     setVendors([...vendors, newVendor]);
     toast.success("Vendor ajouté avec succès! Un email d'invitation a été envoyé.");
-    
+
     setLegalName("");
     setDomainName("");
     setIsAddVendorOpen(false);
@@ -93,7 +93,7 @@ const Index = () => {
               className="gap-2"
             >
               <Settings className="w-4 h-4" />
-              Vendor Integration
+              Intégration de fournisseur
             </Button>
 
             {/* Toggle Button */}
@@ -131,8 +131,8 @@ const Index = () => {
               </SelectTrigger>
               <SelectContent className="bg-card border-border/50 rounded-xl shadow-2xl z-50">
                 {vendors.map((company) => (
-                  <SelectItem 
-                    key={company.id} 
+                  <SelectItem
+                    key={company.id}
                     value={company.id}
                     disabled={company.id !== "micrologic"}
                     className={company.id === "micrologic" ? "hover:bg-muted/50 cursor-pointer rounded-lg" : "opacity-50 cursor-not-allowed rounded-lg"}
@@ -141,7 +141,7 @@ const Index = () => {
                   </SelectItem>
                 ))}
                 <Separator className="my-2" />
-                <SelectItem 
+                <SelectItem
                   value="add-vendor"
                   className="hover:bg-primary/10 cursor-pointer rounded-lg font-medium text-primary"
                 >
@@ -267,7 +267,7 @@ const Index = () => {
                           Vulnérabilité critique (CVE-2025-18723) dans Red Hat OpenShift 4.15
                         </p>
                         <p className="text-xs text-muted-foreground leading-relaxed">
-                          Cette faille permet une élévation de privilèges via le composant de gestion 
+                          Cette faille permet une élévation de privilèges via le composant de gestion
                           des routeurs d'entrée, exposant partiellement les clusters du CSSDM.
                         </p>
                       </div>
@@ -358,12 +358,12 @@ const Index = () => {
               {hasAlert ? "Rapport d'incident complet" : "Rapport de scan complet"}
             </DialogTitle>
             <DialogDescription>
-              {hasAlert 
-                ? "Détails de l'alerte de sécurité détectée" 
+              {hasAlert
+                ? "Détails de l'alerte de sécurité détectée"
                 : "Scan quotidien effectué le 5 novembre 2025 à 08:00"}
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-6 mt-4">
             {/* Summary Section */}
             <div className="space-y-3">
@@ -542,8 +542,8 @@ const Index = () => {
       </Dialog>
 
       {/* Vendor Integration Flow */}
-      <VendorIntegrationFlow 
-        open={isVendorIntegrationOpen} 
+      <VendorIntegrationFlow
+        open={isVendorIntegrationOpen}
         onOpenChange={setIsVendorIntegrationOpen}
       />
 
@@ -553,7 +553,7 @@ const Index = () => {
           <DialogHeader>
             <DialogTitle>Ajouter un nouveau vendor</DialogTitle>
             <DialogDescription>
-              Remplissez les informations du vendor. Nous enverrons un email avec un lien sécurisé 
+              Remplissez les informations du vendor. Nous enverrons un email avec un lien sécurisé
               pour qu'ils puissent déposer leur SBOM sur notre plateforme.
             </DialogDescription>
           </DialogHeader>
@@ -580,7 +580,7 @@ const Index = () => {
             </div>
             <div className="bg-muted/30 p-4 rounded-lg border border-border/50">
               <p className="text-sm text-muted-foreground">
-                📧 Un email sera automatiquement envoyé au vendor avec un lien sécurisé 
+                📧 Un email sera automatiquement envoyé au vendor avec un lien sécurisé
                 pour accéder à notre plateforme et déposer leur SBOM.
               </p>
             </div>
@@ -597,7 +597,7 @@ const Index = () => {
                 Annuler
               </Button>
               <Button type="submit">
-                Ajouter le vendor
+                Ajouter le fournisseur
               </Button>
             </div>
           </form>
