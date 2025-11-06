@@ -225,7 +225,7 @@ export const VendorIntegrationFlow = ({ open, onOpenChange }: VendorIntegrationF
                 <Button onClick={handleClose} variant="outline">
                   Annuler
                 </Button>
-                <Button onClick={() => setStep(3)} disabled={!supplierName || !projectName}>
+                <Button onClick={() => setStep(3)} disabled={!projectName}>
                   Suivant
                 </Button>
               </div>
